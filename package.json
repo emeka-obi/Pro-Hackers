@@ -1,0 +1,22 @@
+{
+  "name": "pro-hackers",
+  "version": "1.0.0",
+  "description": "API tester",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emeka-obi/Pro-Hackers.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emeka-obi/Pro-Hackers/issues"
+  },
+  "homepage": "https://github.com/emeka-obi/Pro-Hackers#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
