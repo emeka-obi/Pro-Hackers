@@ -1,0 +1,25 @@
+{
+  "name": "Pro-Hackers",
+  "version": "1.0.0",
+  "description": "Payments and Pandemic Hackathon team :)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emeka-obi/Pro-Hackers.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emeka-obi/Pro-Hackers/issues"
+  },
+  "homepage": "https://github.com/emeka-obi/Pro-Hackers#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "hjs": "0.0.6",
+    "hogan-middleware": "^0.2.2"
+  }
+}
