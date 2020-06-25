@@ -16,8 +16,8 @@ app.get('/', (req, res) => {
 
 app.post('/getdata', (req, res) => {
   // Check that data exists, set variable dataFound to the data if it does
-  const dataFound = req.body.queryResult && req.body.queryResult.parameters && req.body.queryResult.parameters.restaurant
-  ? req.body.result.parameters.restaurant : ' '
+  const dataFound = req.body.result && req.body.result.parameters && req.body.result.parameters.restaurant
+  ? req.body.result.parameters.restaurant : 'No restaurant entered'
   res.json({
     fulfillmentText: dataFound,
     source: 'getdata'
