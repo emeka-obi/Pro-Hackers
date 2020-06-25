@@ -18,9 +18,11 @@ app.post('/getdata', (req, res) => {
   // Check that data exists, set variable dataFound to the data if it does
   const dataFound = req.body.result && req.body.result.parameters && req.body.result.parameters.restaurant
   ? req.body.result.parameters.restaurant : 'No restaurant entered'
+  const paramsFound = req.body.result.parameters ? req.body.result.parameters : 'no parameters'
   res.json({
     fulfillmentText: dataFound,
-    source: 'getdata'
+    source: 'getdata',
+    params: paramsFound
   })
 })
 
