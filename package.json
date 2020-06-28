@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/emeka-obi/Pro-Hackers#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "follow-redirects": "^1.12.1",
+    "fs": "0.0.1-security",
+    "request": "^2.88.2"
   }
 }
