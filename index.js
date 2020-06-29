@@ -27,10 +27,10 @@ app.post('/getdata', (req, res) => {
 })
 
 app.post('/getmerchant', (req, res) => {
-  var zip = 80129
+  var zip = 90007
   var options = {
         'method': 'POST',
-        'key': fs.readFileSync("key_d0a3051c-5abf-4e3b-bd84-dfdcc5a72efa.pem"),
+        'key': fs.readFileSync("key_ad1d3f5e-0d23-4610-9a28-6aca251871b0.pem"),
         'cert': fs.readFileSync("cert.pem"),
         'url': 'https://sandbox.api.visa.com/merchantlocator/v1/locator',
         'headers': {
@@ -43,10 +43,11 @@ app.post('/getmerchant', (req, res) => {
         "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
       }
     request(options, function (error, response) {
-      if (error) throw new Error(error);
-      console.log(response.body);
+      if (error) throw new Error(error)
+      console.log(response.body)
+      res.end(response.body)
       })
-    res.end("")
+  //  res.end(" ")
 })
 
 
