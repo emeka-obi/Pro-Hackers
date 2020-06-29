@@ -1,0 +1,25 @@
+{
+  "name": "pro-hackers",
+  "version": "1.0.0",
+  "description": "hackathon project",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "express": "^4.17.1",
+    "follow-redirects": "^1.12.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emeka-obi/Pro-Hackers.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emeka-obi/Pro-Hackers/issues"
+  },
+  "homepage": "https://github.com/emeka-obi/Pro-Hackers#readme"
+}
