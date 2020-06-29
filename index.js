@@ -8,7 +8,7 @@ const fs = require('fs')
 const app = express()
 app.set('views', path.join(__dirname, 'views'))
 
-/*app.post('/getdata', (req, res) => {
+app.post('/getdata', (req, res) => {
     var responseText = '';
 
     var restName = "", restLoc, keyWord;
@@ -56,15 +56,15 @@ app.set('views', path.join(__dirname, 'views'))
     
     var myPath = '/v3/businesses/search?term=' + restName + "&location=" + restLoc;
     var options = {
-        'method': 'GET',
-        'hostname': 'api.yelp.com',
-        'path': myPath,
-        'headers': {
-        'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
-  },
-  'maxRedirects': 20
-};*/
-
+            'method': 'GET',
+            'hostname': 'api.yelp.com',
+            'path': myPath,
+            'headers': {
+            'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
+      },
+      'maxRedirects': 20
+    };
+}
 
 
 app.post('/getmerchant', (req, res) => {
