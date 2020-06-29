@@ -1,5 +1,5 @@
 const express = require('express')
-const axios = require('axios');
+var axios = require('axios');
 const http = require('http')
 const https = require('https')
 const path = require('path')
@@ -25,22 +25,23 @@ app.listen(port, () => {
 app.post('/getdata', (req, res) => {
     var responseText = '';
 
-    
-    var restName, restLoc, keyWord;
-
+    var restName = "", restLoc, keyWord;
     for (const context of req.body.queryResult.outputContexts) {
         if (context.name.includes("zip") && !context.name.includes("followup")) {
 
             //Parse out restaurant name and location
-            let restName = context.parameters.restaurant;
-            let restLoc = context.parameters.address;
+            var tempName = context.parameters.restaurant;
+            var tempLoc = context.parameters.address;
             var zip = context.parameters.zip;
-            if (!restLoc.includes(zip)) restLoc += " " + zip;
+            if (!tempLoc.includes(zip)) tempLoc += "-" + zip;
 
-            //Remove whitespaces and commas - DOES NOT WORK YET
-            let restName = restName.replace(/\s+/g, '-');
-            responseText += restname + "/n";
+            //Remove whitespaces and commas
+            if (tempName.length != 0) {
+                let restName = tempName.split(' ').join('-');
 
+            } 
+            restLoc = tempLoc.split(' ').join('-');
+            
             break;
         }
     }
@@ -55,7 +56,10 @@ app.post('/getdata', (req, res) => {
     }
 
     //Search yelp
-    var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
+
+    //var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
+    responseText = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
+    var searchUrl = "https://api.yelp.com/v3/businesses/search?term=ice-cream&latitude=33.835850&longitude=-118.366150"
     var config = {
         method: 'get',
         url: searchUrl,
@@ -64,15 +68,15 @@ app.post('/getdata', (req, res) => {
         }
     };
 
-    //Return results to dialogflow
+    //Return results
     axios(config)
         .then(function (response) {
             var allRestaurants = JSON.stringify(response.data);
             var restObj = JSON.parse(allRestaurants);
-            let responseText = restObj.businesses[0].name;
-            responseText += restObj.businesses[0].display_address;
+            //responseText += "\n" + restObj.businesses[0].name;
+            //responseText += restObj.businesses[0].display_address;
             //let responseText = req.body.queryResult.outputContexts.length;
-            
+
             res.json({
                 fulfillmentText: responseText,
                 source: 'getdata'
