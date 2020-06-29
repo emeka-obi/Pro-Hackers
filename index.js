@@ -2,6 +2,8 @@ const express = require('express')
 const http = require('http')
 const path = require('path')
 const hoganMiddleware = require('hogan-middleware') // Mustache templating engine
+const fs = require('fs')
+const request = require('request')
 
 const app = express()
 app.set('views', path.join(__dirname, 'views'))
@@ -18,12 +20,36 @@ app.post('/getdata', (req, res) => {
   // Check that data exists, set variable dataFound to the data if it does
   const dataFound = req.body.queryResult && req.body.queryResult.parameters && req.body.queryResult.parameters.restaurant
   ? req.body.queryResult.parameters.restaurant : 'No restaurant entered'
-//  const paramsFound = req.body.result.parameters ? req.body.result.parameters : 'no parameters'
   res.json({
     fulfillmentText: dataFound,
     source: 'getdata'
   })
 })
+
+app.post('/getmerchant', (req, res) => {
+  var zip = 80129
+  var options = {
+        'method': 'POST',
+        'key': fs.readFileSync("key_d0a3051c-5abf-4e3b-bd84-dfdcc5a72efa.pem"),
+        'cert': fs.readFileSync("cert.pem"),
+        'url': 'https://sandbox.api.visa.com/merchantlocator/v1/locator',
+        'headers': {
+            'Accept': 'application/json',
+            'Authorization': 'Basic WlRQREpYVjc2M1U1T09aWTIxUFIyMUEwdFFhY09kcGljN2VQVUxXelpJOERUMWdVYzoybFZiNTc3dURxcFh6VTNOZktGVG1xYno1TzY=',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
+        "searchAttrList":{"merchantCategoryCode":["5812","5814"],"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
+        "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
+      }
+    request(options, function (error, response) {
+      if (error) throw new Error(error);
+      console.log(response.body);
+      })
+    res.end("")
+})
+
+
 
 const PORT = process.env.PORT || 5000
 
