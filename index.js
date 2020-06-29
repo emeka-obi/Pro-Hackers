@@ -1,9 +1,9 @@
 const express = require('express')
 const http = require('http')
+const https = require('follow-redirects').https;
 const path = require('path')
 const hoganMiddleware = require('hogan-middleware') // Mustache templating engine
 const fs = require('fs')
-const request = require('request')
 
 const app = express()
 app.set('views', path.join(__dirname, 'views'))
@@ -29,27 +29,60 @@ app.post('/getdata', (req, res) => {
 app.post('/getmerchant', (req, res) => {
   var zip = 90007
   var options = {
-        'method': 'POST',
-        'key': fs.readFileSync("key_ad1d3f5e-0d23-4610-9a28-6aca251871b0.pem"),
-        'cert': fs.readFileSync("cert.pem"),
-        'url': 'https://sandbox.api.visa.com/merchantlocator/v1/locator',
-        'headers': {
-            'Accept': 'application/json',
-            'Authorization': 'Basic WlRQREpYVjc2M1U1T09aWTIxUFIyMUEwdFFhY09kcGljN2VQVUxXelpJOERUMWdVYzoybFZiNTc3dURxcFh6VTNOZktGVG1xYno1TzY=',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
-        "searchAttrList":{"merchantCategoryCode":["5812","5814"],"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
-        "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
+    'method': 'POST',
+    'hostname': 'sandbox.api.visa.com',
+    'key': fs.readFileSync("key_ad1d3f5e-0d23-4610-9a28-6aca251871b0.pem"),
+    'cert': fs.readFileSync("cert.pem"),
+    'path': '/merchantlocator/v1/locator',
+    'headers': {
+      'Accept': 'application/json',
+      'Authorization': 'Basic WlRQREpYVjc2M1U1T09aWTIxUFIyMUEwdFFhY09kcGljN2VQVUxXelpJOERUMWdVYzoybFZiNTc3dURxcFh6VTNOZktGVG1xYno1TzY=',
+      'Content-Type': 'application/json'
+    },
+    'maxRedirects': 20
+  };
+
+  var apiRequest = https.request(options, function (apiResponse) {
+    var chunks = [];
+
+    apiResponse.on("data", function (chunk) {
+      chunks.push(chunk);
+    });
+
+    apiResponse.on("end", function (chunk) {
+      var body = Buffer.concat(chunks);
+      var jsonRes = JSON.parse(body);
+      var restaurantRes = jsonRes.merchantLocatorServiceResponse.response;
+      var restaurantNames = [];
+      //console.log(body.toString());
+    //  Below loop prints out each restaurant name
+    // to see all parameters change to restaurantRes[i]
+      for (var i = 0; i < restaurantRes.length; ++i) {
+        console.log(restaurantRes[i].responseValues.visaStoreName)
+        restaurantNames.push(restaurantRes[i].responseValues.visaStoreName)
       }
-    request(options, function (error, response) {
-      if (error) throw new Error(error)
-      console.log(response.body)
-      res.end(response.body)
+      res.json ({
+        fulfillmentText: restaurantNames,
+        location: zip
       })
-  //  res.end(" ")
+    });
+
+    apiResponse.on("error", function (error) {
+      console.error(error);
+      res.json ({
+        fulfillmentText: "No restaurants found nearby",
+        location: zip
+      })
+    });
 })
 
+var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
+"searchAttrList":{"merchantCategoryCode":["5812","5814"],"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
+"responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
+apiRequest.write(postData);
+
+apiRequest.end();
+})
 
 
 const PORT = process.env.PORT || 5000
