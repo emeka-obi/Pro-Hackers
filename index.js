@@ -36,9 +36,9 @@ app.post('/getdata', (req, res) => {
             if (!tempLoc.includes(zip)) tempLoc += "-" + zip;
 
             //Remove whitespaces and commas
-            if (tempName.length != 0) {
-                let restName = tempName.split(' ').join('-');
 
+            if (tempName.length != 0) {
+                restName = tempName.split(' ').join('-');
             } 
             restLoc = tempLoc.split(' ').join('-');
             
