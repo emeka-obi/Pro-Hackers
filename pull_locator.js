@@ -1,33 +1,17 @@
-// var request = require('request');
-// var req = request.defaults();
-// var fs = require('fs');
-
-// req.post({
-//     uri : "https://sandbox.api.visa.com/",
-
-//     headers: {
-//       'Content-Type' : 'application/json',
-//       'Accept' : 'application/json',
-//       'Authorization' : 'Basic ' + new Buffer(userId + ':' + password).toString('base64')
-//     },
-//     body: data
-//   }, function(error, response, body) {
-//   }
-// );
+var fs = require('fs')
 
 var request = require('request');
-var fs = require('fs')
 var options = {
   'method': 'POST',
-  'url': 'https://sandbox.api.visa.com/visaqueueinsights/v1/queueinsights',
-  'key': fs.readFileSync("key_2023928c-0c6a-4108-b260-d99709d8bd62.pem"),
+  'key': fs.readFileSync("key_d0a3051c-5abf-4e3b-bd84-dfdcc5a72efa.pem"),
   'cert': fs.readFileSync("cert.pem"),
+  'url': 'https://sandbox.api.visa.com/merchantlocator/v1/locator',
   'headers': {
     'Accept': 'application/json',
-    'Authorization': 'Basic RFRPSVRBTFdWV1pXRFE2U1FNMTAyMXl5eHB5T1R2RmYxR3BXenIwRmNxTWN6YjMxTTpaczVCNzBVSDEz:',
+    'Authorization': 'Basic VjNHMUNPU1IxUFpBSFNSTVZTMUIyMW4zLTd0dF9ZV2tZVDhSRm1uaEYweDZUM0NwdzpTT29qMDRvQTU1OWNnZm11R1pkUXJENm1BZTg2QTE0cXMxNVdyeXI=',
     'Content-Type': 'application/json'
   },
-  body: JSON.stringify({"requestHeader":{"messageDateTime":"2020-06-26T19:09:18.327","requestMessageId":"6da60e1b8b024532a2e0eacb1af58581"},"requestData":{"kind":"predict"}})
+  body: JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},"searchAttrList":{"merchantCategoryCode":["5812","5814"],"merchantCountryCode":"840","merchantPostalCode":"78759","distance":"2","distanceUnit":"M"},"responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
 
 };
 request(options, function (error, response) {
