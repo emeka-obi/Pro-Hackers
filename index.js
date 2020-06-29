@@ -60,14 +60,24 @@ app.post('/getdata', (req, res) => {
     //var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
     responseText = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
     var searchUrl = "https://api.yelp.com/v3/businesses/search?term=ice-cream&latitude=33.835850&longitude=-118.366150"
-    var config = {
-        method: 'get',
-        url: searchUrl,
-        headers: {
-            'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
-        }
-    };
-
+//     var config = {
+//         method: 'get',
+//         url: searchUrl,
+//         headers: {
+//             'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
+//         }
+//     };
+    
+    var myPath = '/v3/businesses/search?term=' + restName + "&location=" + restLoc;
+    var options = {
+        'method': 'GET',
+        'hostname': 'api.yelp.com',
+        'path': myPath,
+        'headers': {
+        'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
+  },
+  'maxRedirects': 20
+};
     //Return results
     axios(config)
         .then(function (response) {
