@@ -112,25 +112,27 @@ app.post('/getmerchant', (req, res) => {
             requestedRestaurantAddress: tempLoc
           })
         }
-        // Loop through each restaurant returned from the api search
-        // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
-        // Store each restaurant and its specific parameteres in a variable resultArray
-        for (var i = 0; i < restaurantRes.length; ++i) {
-          console.log(restaurantRes[i].responseValues)
-          var temp = new Object()
-          temp.name = restaurantRes[i].responseValues.visaStoreName
-          temp.paymentAcceptanceMethods = restaurantRes[i].responseValues.paymentAcceptanceMethod
-          temp.terminalType = restaurantRes[i].responseValues.terminalType
-          temp.address = restaurantRes[i].responseValues.merchantStreetAddress
-          temp.zipCode = restaurantRes[i].responseValues.merchantPostalCode
-          temp.city = restaurantRes[i].responseValues.merchantCity
-          if (restaurantRes[i].responseValues.merchantState) {
-            temp.state = restaurantRes[i].responseValues.merchantState
+        else {
+          // Loop through each restaurant returned from the api search
+          // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
+          // Store each restaurant and its specific parameteres in a variable resultArray
+          for (var i = 0; i < restaurantRes.length; ++i) {
+            console.log(restaurantRes[i].responseValues)
+            var temp = new Object()
+            temp.name = restaurantRes[i].responseValues.visaStoreName
+            temp.paymentAcceptanceMethods = restaurantRes[i].responseValues.paymentAcceptanceMethod
+            temp.terminalType = restaurantRes[i].responseValues.terminalType
+            temp.address = restaurantRes[i].responseValues.merchantStreetAddress
+            temp.zipCode = restaurantRes[i].responseValues.merchantPostalCode
+            temp.city = restaurantRes[i].responseValues.merchantCity
+            if (restaurantRes[i].responseValues.merchantState) {
+              temp.state = restaurantRes[i].responseValues.merchantState
+            }
+            resultArray.push(temp)
           }
-          resultArray.push(temp)
+          // Take resultArray, return it as JSON
+          res.json(resultArray)
         }
-        // Take resultArray, return it as JSON
-        res.json(resultArray)
       });
 
       apiResponse.on("error", function (error) {
