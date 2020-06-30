@@ -19,7 +19,7 @@ app.post('/getmerchant', (req, res) => {
             //Parse out restaurant name and location
             tempName = context.parameters.restaurant;
             var tempLoc = context.parameters.address;
-            var zip = context.parameters.zip;
+            zip = context.parameters.zip;
             if (tempLoc && !tempLoc.includes(zip)) tempLoc += "-" + zip;
             //Remove whitespaces and commas
             if (tempName && tempName.length != 0) {
