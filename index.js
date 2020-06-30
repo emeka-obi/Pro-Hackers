@@ -44,7 +44,7 @@ app.post('/getmerchant', (req, res) => {
     //yelp search
     var myPath = '/v3/businesses/search?term=' + restName + "&location=" + restLoc;
     var yelpOptions = {
-        'method': 'GET',
+        'method': 'POST',
         'hostname': 'api.yelp.com',
         'path': myPath,
         'headers': {
@@ -63,8 +63,7 @@ app.post('/getmerchant', (req, res) => {
       res.on("end", function (chunk){ 
         var yelpBody = Buffer.concat(chunks);
         var yelpRes = JSON.parse(yelpBody);
-//         responseText += yelpRes.businesses[0].name;
-          responseText += "hi";
+         responseText += yelpRes.businesses[0].name;
          
         res.json ({
           fulfillmentText: responseText,
