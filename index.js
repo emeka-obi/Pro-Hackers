@@ -90,8 +90,8 @@ app.post('/getmerchant', (req, res) => {
         res.json ({
           fulfillmentText: restaurantNames,
           location: zip,
-          requestedRestaurant: tempName,
-          addressLocation: tempLoc
+          requestedRestaurant: restName,
+          addressLocation: restLoc
         })
       });
 
@@ -100,8 +100,8 @@ app.post('/getmerchant', (req, res) => {
         res.json ({
           fulfillmentText: "No restaurants found nearby",
           location: zip,
-          requestedRestaurant: tempName,
-          addressLocation: tempLoc
+          requestedRestaurant: restName,
+          addressLocation: restLoc
         })
       });
   })
