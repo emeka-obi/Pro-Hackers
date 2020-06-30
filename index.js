@@ -7,6 +7,7 @@ const fs = require('fs')
 
 const app = express()
 app.set('views', path.join(__dirname, 'views'))
+app.use(express.json())
 
 app.post('/getmerchant', (req, res) => {
     //Get data from dialogflow
@@ -19,12 +20,14 @@ app.post('/getmerchant', (req, res) => {
             var tempName = context.parameters.restaurant;
             var tempLoc = context.parameters.address;
             var zip = context.parameters.zip;
-            if (!tempLoc.includes(zip)) tempLoc += "-" + zip;
+            if (tempLoc && !tempLoc.includes(zip)) tempLoc += "-" + zip;
             //Remove whitespaces and commas
-            if (tempName.length != 0) {
+            if (tempName && tempName.length != 0) {
                 restName = tempName.split(' ').join('-'); //trim whitespace for parsing
             }
-            restLoc = tempLoc.split(' ').join('-');
+            if (restLoc) {
+                restLoc = tempLoc.split(' ').join('-');
+            }
 
             break;
         }
