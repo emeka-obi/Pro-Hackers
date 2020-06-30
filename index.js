@@ -14,12 +14,14 @@ app.post('/getmerchant', (req, res) => {
     //Get data from dialogflow
 
     var responseText = '';
-    var restName, restLoc, keyWord, tempName, zip;
+    var restName, restLoc, keyWord, tempName, zip, tempLoc,radius;
     for (const context of req.body.queryResult.outputContexts) {
         if (context.name.includes("zip") && !context.name.includes("followup")) {
             //Parse out restaurant name and location
             tempName = context.parameters.restaurant;
-            var tempLoc = context.parameters.address;
+            tempLoc = context.parameters.address;
+            var tempKeyWord = context.parameters.searchkeywords;
+            var tempRad = context.parameters.unitlength;
             zip = context.parameters.zip;
             if (tempLoc && !tempLoc.includes(zip)) tempLoc += "-" + zip;
             //Remove whitespaces and commas
@@ -29,7 +31,12 @@ app.post('/getmerchant', (req, res) => {
             if (tempLoc) {
                 restLoc = tempLoc.split(' ').join('-');
             }
-
+            if(tempKeyWord){
+                keyWord = tempKeyWord.split(' ').join('-');
+            }
+            if(tempRad){
+                radius = tempRad.split(' ').join('-');
+            }
             break;
         }
     }
