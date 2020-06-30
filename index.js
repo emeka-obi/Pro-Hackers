@@ -1,4 +1,5 @@
 const express = require('express')
+const axios = require('axios')
 const http = require('http')
 const https = require('follow-redirects').https;
 const path = require('path')
@@ -41,44 +42,24 @@ app.post('/getmerchant', (req, res) => {
     else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
     }*/
 
-    //yelp search
-    var myPath = '/v3/businesses/search?term=" + restName + "&location="+ restLoc;
-    var yelpOptions = {
-        'method': 'GET',
-        'hostname': 'api.yelp.com',
-        'path': myPath,
-        'headers': {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx',
-            'Content-Type': 'application/json'
-        },
-        'maxRedirects': 20
-    };
-    
-    var yelpRequest = https.request(yelpOptions, function (res) {
-    var chunks = [];
+    //Yelp search
+    axios(config)
+        .then(function (response) {
+            var allRestaurants = JSON.stringify(response.data);
+            var restObj = JSON.parse(allRestaurants);
+            
+            responseText += restObj.businesses[0].name;
+            //responseText += restObj.businesses[0].display_address;
+            //let responseText = req.body.queryResult.outputContexts.length;
 
-      res.on("data", function (chunk) {
-        chunks.push(chunk);
-      });
-
-      res.on("end", function (chunk){ 
-        var yelpBody = Buffer.concat(chunks);
-        var yelpRes = JSON.parse(yelpBody);
-         responseText += yelpRes.businesses[0].name;
-         
-        res.json ({
-          fulfillmentText: responseText,
-          source: 'getmerchant'
+            res.json({
+                fulfillmentText: responseText,
+                source: 'getdata'
+            })
         })
-      });
-
-      res.on("error", function (error) {
-        console.error(error);
-      });
-    });
-
-    yelpRequest.end();
+        .catch(function (error) {
+            console.log(error);
+        });
     
 })
 
