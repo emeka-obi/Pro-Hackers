@@ -77,6 +77,7 @@ app.post('/getmerchant', (req, res) => {
           var resultArray = [];
           // Check if 0 results
           if (!restaurantRes) {
+            responseText += "no results from Visa"
             res.json({
               message: "False",
               zipCode: zip,
@@ -107,7 +108,7 @@ app.post('/getmerchant', (req, res) => {
             // res.json(resultArray)
 
             // TODO: Reformat the same as Yelp
-            responseText += temp.name + "\n" + temp.paymentAcceptanceMethods + "\n" + temp.terminalType + "\n" + temp.address + "\n" + temp.zipCode + "\n" + temp.city + "\n" + temp.url
+            responseText += "Visa result:" + temp.name + "\n" + temp.paymentAcceptanceMethods + "\n" + temp.terminalType + "\n" + temp.address + "\n" + temp.zipCode + "\n" + temp.city + "\n" + temp.url
 
             var splitLoc = temp.address + "-" + temp.zipCode + "-" + temp.city;
             restLoc = splitLoc.split(' ').join('-')
@@ -147,11 +148,11 @@ app.post('/getmerchant', (req, res) => {
 
             //Case where Visa API has no results
             if(responseText.localeCompare("")){ //TODO: Add variables
-              responseText += restObj.businesses[0].name + "\n" + restObj.businesses[0].location.displayAddress + restObj.businesses[0].display_phone;
+              responseText += restObj.businesses[0].name + "found" + "\n" + restObj.businesses[0].location.displayAddress + restObj.businesses[0].display_phone;
             }  
             // Case where Visa API has results and we are adding to them
             else { //TODO: Add variables
-              responseText += restObj.businesses[0].name + "\n";
+              responseText += restObj.businesses[0].name + "not found" + "\n";
             }
             //responseText += restObj.businesses[0].display_address;
             //let responseText = req.body.queryResult.outputContexts.length;
