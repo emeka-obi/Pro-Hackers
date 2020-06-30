@@ -13,19 +13,19 @@ app.post('/getmerchant', (req, res) => {
     //Get data from dialogflow
 
     var responseText = '';
-    var restName, restLoc, keyWord;
+    var restName, restLoc, keyWord, tempName, zip;
     for (const context of req.body.queryResult.outputContexts) {
         if (context.name.includes("zip") && !context.name.includes("followup")) {
             //Parse out restaurant name and location
-            var tempName = context.parameters.restaurant;
+            tempName = context.parameters.restaurant;
             var tempLoc = context.parameters.address;
-            var inZip = context.parameters.zip;
-            if (tempLoc && !tempLoc.includes(inZip)) tempLoc += "-" + inZip;
+            var zip = context.parameters.zip;
+            if (tempLoc && !tempLoc.includes(zip)) tempLoc += "-" + zip;
             //Remove whitespaces and commas
             if (tempName && tempName.length != 0) {
                 restName = tempName.split(' ').join('-'); //trim whitespace for parsing
             }
-            if (restLoc) {
+            if (tempLoc) {
                 restLoc = tempLoc.split(' ').join('-');
             }
 
@@ -53,7 +53,7 @@ app.post('/getmerchant', (req, res) => {
         'maxRedirects': 20
     };*/
     //call Visa merchant locator API
-    var zip = 90007
+    //var zip = 90007
     var options = {
       'method': 'POST',
       'hostname': 'sandbox.api.visa.com',
@@ -90,7 +90,7 @@ app.post('/getmerchant', (req, res) => {
         res.json ({
           fulfillmentText: restaurantNames,
           location: zip,
-          requestedRestaurant: restName,
+          requestedRestaurant: tempName,
           addressLocation: restLoc
         })
       });
@@ -100,7 +100,7 @@ app.post('/getmerchant', (req, res) => {
         res.json ({
           fulfillmentText: "No restaurants found nearby",
           location: zip,
-          requestedRestaurant: restName,
+          requestedRestaurant: tempName,
           addressLocation: restLoc
         })
       });
