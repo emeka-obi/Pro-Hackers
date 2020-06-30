@@ -53,45 +53,50 @@ app.post('/getmerchant', (req, res) => {
         'maxRedirects': 20
     };
     
-    var yelpRequest = https.request(options, function (res) {
-    var chunks = [];
-
-      res.on("data", function (chunk) {
-        chunks.push(chunk);
-      });
-
-      res.on("end", function (chunk) 
-        var yelpBody = Buffer.concat(chunks);
-        var yelpRes = JSON.parse(yelpBody);
-        responseText += yelpRes.businesses[0].name;
-         
-        res.json ({
-          fulfillmentText: responseText,
+    res.json ({
+          fulfillmentText: myPath,
           source: 'getmerchant'
-        })
-      });
+        });
+    
+//     var yelpRequest = https.request(options, function (res) {
+//     var chunks = [];
 
-      res.on("error", function (error) {
-        console.error(error);
-      });
-    });
+//       res.on("data", function (chunk) {
+//         chunks.push(chunk);
+//       });
 
-    yelpRequest.end();
+//       res.on("end", function (chunk) 
+//         var yelpBody = Buffer.concat(chunks);
+//         var yelpRes = JSON.parse(yelpBody);
+//         responseText += yelpRes.businesses[0].name;
+         
+//         res.json ({
+//           fulfillmentText: responseText,
+//           source: 'getmerchant'
+//         })
+//       });
+
+//       res.on("error", function (error) {
+//         console.error(error);
+//       });
+//     });
+
+//     yelpRequest.end();
 
     //var zip = 90007
-    var visaOptions = {
-      'method': 'POST',
-      'hostname': 'sandbox.api.visa.com',
-      'key': fs.readFileSync("key_ad1d3f5e-0d23-4610-9a28-6aca251871b0.pem"),
-      'cert': fs.readFileSync("cert.pem"),
-      'path': '/merchantlocator/v1/locator',
-      'headers': {
-        'Accept': 'application/json',
-        'Authorization': 'Basic WlRQREpYVjc2M1U1T09aWTIxUFIyMUEwdFFhY09kcGljN2VQVUxXelpJOERUMWdVYzoybFZiNTc3dURxcFh6VTNOZktGVG1xYno1TzY=',
-        'Content-Type': 'application/json'
-      },
-      'maxRedirects': 20
-    };
+//     var visaOptions = {
+//       'method': 'POST',
+//       'hostname': 'sandbox.api.visa.com',
+//       'key': fs.readFileSync("key_ad1d3f5e-0d23-4610-9a28-6aca251871b0.pem"),
+//       'cert': fs.readFileSync("cert.pem"),
+//       'path': '/merchantlocator/v1/locator',
+//       'headers': {
+//         'Accept': 'application/json',
+//         'Authorization': 'Basic WlRQREpYVjc2M1U1T09aWTIxUFIyMUEwdFFhY09kcGljN2VQVUxXelpJOERUMWdVYzoybFZiNTc3dURxcFh6VTNOZktGVG1xYno1TzY=',
+//         'Content-Type': 'application/json'
+//       },
+//       'maxRedirects': 20
+//     };
 //     var apiRequest = https.request(visaOptions, function (apiResponse) {
 //       var chunks = [];
 
