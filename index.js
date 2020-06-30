@@ -75,8 +75,6 @@ app.post('/getmerchant', (req, res) => {
             .catch(function (error) {
                 console.log(error);
             });
-
-    })
     //call Visa merchant locator API
   //  var zip = 90007
     var options = {
