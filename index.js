@@ -8,66 +8,35 @@ const fs = require('fs')
 const app = express()
 app.set('views', path.join(__dirname, 'views'))
 
-app.post('/getdata', (req, res) => {
-    var responseText = '';
-
-    var restName = "", restLoc, keyWord;
+app.post('/getmerchant', (req, res) => {
+    
+    //Gather data from dialogflow
+    var restName, restLoc, keyWord, radius;
     for (const context of req.body.queryResult.outputContexts) {
         if (context.name.includes("zip") && !context.name.includes("followup")) {
 
-            //Parse out restaurant name and location
-            var tempName = context.parameters.restaurant;
-            var tempLoc = context.parameters.address;
-            var zip = context.parameters.zip;
-            if (!tempLoc.includes(zip)) tempLoc += "-" + zip;
-
-            //Remove whitespaces and commas
-
+            //Parse out input details (restaurant name, location, keywords, search radius); if not given, variables will just be empty
+            var tempName = context.parameters.restaurant; 
             if (tempName.length != 0) {
-                restName = tempName.split(' ').join('-');
+                restName = tempName.split(' ').join('-'); //this, line 88, and 93 remove whitespace so it's easier to pass into the search path
             } 
-            restLoc = tempLoc.split(' ').join('-');
             
+            var tempLoc = context.parameters.address;
+            var inZip = context.parameters.zip;
+            if(tempLoc.length == 0) restLoc = inZip;
+            else {
+                if (!tempLoc.includes(inZip)) tempLoc += "-" + inZip;
+                restLoc = tempLoc.split(' ').join('-');
+            }
+            //If restaurant name isn't given, then check for keyword (only one or the other will be given)
+            if(restName.length == 0){
+                var tempKey = context.parameters.searchkeywords;
+                keyWord = tempKey.split(' ').join('-');
+            }
             break;
         }
     }
-
-    //Option 1: specific restaurant
-    if (req.body.queryResult.intent.displayName.includes("list-options - 1 - checkapi")) {
-
-    }
-    //Option 2: multiple restaurants, sort by wait time
-    else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
-
-    }
-
-    //Search yelp
-
-    //var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
-    responseText = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
-    var searchUrl = "https://api.yelp.com/v3/businesses/search?term=ice-cream&latitude=33.835850&longitude=-118.366150"
-//     var config = {
-//         method: 'get',
-//         url: searchUrl,
-//         headers: {
-//             'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
-//         }
-//     };
     
-    var myPath = '/v3/businesses/search?term=' + restName + "&location=" + restLoc;
-    var options = {
-            'method': 'GET',
-            'hostname': 'api.yelp.com',
-            'path': myPath,
-            'headers': {
-            'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
-      },
-      'maxRedirects': 20
-    };
-}
-
-
-app.post('/getmerchant', (req, res) => {
     var zip = 90007
     var options = {
       'method': 'POST',
@@ -82,7 +51,30 @@ app.post('/getmerchant', (req, res) => {
       },
       'maxRedirects': 20
     };
-  
+    
+    //Code to use for carrying out the two types of request (specific restaurant and search); we'll need to put the "grab from visa" within each of these
+    /*//Option 1: specific restaurant
+    if (req.body.queryResult.intent.displayName.includes("list-options - 1 - checkapi")) {
+
+    }
+    //Option 2: multiple restaurants, sort by wait time
+    else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
+
+    } */
+    
+    //Code to graph from yelp for first option; will also need to rearrange
+    /*var myPath = '/v3/businesses/search?term=' + restName + "&location=" + restLoc;
+    var options = {
+            'method': 'GET',
+            'hostname': 'api.yelp.com',
+            'path': myPath,
+            'headers': {
+            'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
+      },
+      'maxRedirects': 20
+    };*/
+    
+    //Grab from Visa
     var apiRequest = https.request(options, function (apiResponse) {
       var chunks = [];
   
@@ -102,12 +94,15 @@ app.post('/getmerchant', (req, res) => {
           console.log(restaurantRes[i].responseValues.visaStoreName)
           restaurantNames.push(restaurantRes[i].responseValues.visaStoreName)
         }
+        
+        //Return data
         res.json ({
           fulfillmentText: restaurantNames,
           location: zip
         })
       });
-  
+        
+        //Return error message
       apiResponse.on("error", function (error) {
         console.error(error);
         res.json ({
