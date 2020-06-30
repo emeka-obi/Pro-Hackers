@@ -277,8 +277,9 @@ app.post('/getmerchant', (req, res) => {
   apiRequest.write(postData);
 
   apiRequest.end();
+  */
   })
-*/
+
 
   const PORT = process.env.PORT || 3000
 
