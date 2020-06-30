@@ -13,14 +13,19 @@ app.post('/getmerchant', (req, res) => {
     //Get data from dialogflow
 
     var responseText = '';
-    var restName = "", restLoc, keyWord;
+    var restName, restLoc, keyWord;
     for (const context of req.body.queryResult.outputContexts) {
         if (context.name.includes("zip") && !context.name.includes("followup")) {
             //Parse out restaurant name and location
             var tempName = context.parameters.restaurant;
             var tempLoc = context.parameters.address;
+<<<<<<< HEAD
             var zip = context.parameters.zip;
             if (tempLoc && !tempLoc.includes(zip)) tempLoc += "-" + zip;
+=======
+            var inZip = context.parameters.zip;
+            if (!tempLoc.includes(zip)) tempLoc += "-" + inZip;
+>>>>>>> 313f4abed0ed369b30f954cf14764be1df4fd0bf
             //Remove whitespaces and commas
             if (tempName && tempName.length != 0) {
                 restName = tempName.split(' ').join('-'); //trim whitespace for parsing
