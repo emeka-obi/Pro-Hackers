@@ -63,7 +63,8 @@ app.post('/getmerchant', (req, res) => {
       res.on("end", function (chunk){ 
         var yelpBody = Buffer.concat(chunks);
         var yelpRes = JSON.parse(yelpBody);
-        responseText += yelpRes.businesses[0].name;
+//         responseText += yelpRes.businesses[0].name;
+          responseText += "hi";
          
         res.json ({
           fulfillmentText: responseText,
