@@ -29,10 +29,10 @@ app.post('/getmerchant', (req, res) => {
                 restLoc = tempLoc.split(' ').join('-');
             }
             //If restaurant name isn't given, then check for keyword (only one or the other will be given)
-            if(restName.length == 0){
-                var tempKey = context.parameters.searchkeywords;
-                keyWord = tempKey.split(' ').join('-');
-            }
+//             if(restName.length == 0){
+//                 var tempKey = context.parameters.searchkeywords;
+//                 keyWord = tempKey.split(' ').join('-');
+//             }
             break;
         }
     }
