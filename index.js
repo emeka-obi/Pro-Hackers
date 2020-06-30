@@ -57,7 +57,7 @@ app.post('/getmerchant', (req, res) => {
           fulfillmentText: myPath,
           source: 'getmerchant'
         });
-}
+})
     
 //     var yelpRequest = https.request(options, function (res) {
 //     var chunks = [];
