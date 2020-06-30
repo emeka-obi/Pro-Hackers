@@ -53,7 +53,7 @@ app.post('/getmerchant', (req, res) => {
         'maxRedirects': 20
     };
     
-    var yelpRequest = https.request(options, function (res) {
+    var yelpRequest = https.request(yelpOptions, function (res) {
     var chunks = [];
 
       res.on("data", function (chunk) {
