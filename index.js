@@ -116,7 +116,8 @@ app.post('/getmerchant', (req, res) => {
             var splitName = temp.name
             restName = splitName.split(' ').join('-')
 
-            responseText += searchYelp(restLoc, restName)
+            var yelpResult = searchYelp(restLoc, restName)
+            responseText += yelpResult;
 
             res.json({
               fulfillmentText: responseText,
@@ -182,6 +183,82 @@ app.post('/getmerchant', (req, res) => {
     
     //Option 2: multiple restaurants, sort by wait time
     else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
+      if(!radius){
+        radius = 5;
+      }
+      var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
+      "searchAttrList":{"merchantCategoryCode":["5812","5814"],"merchantCountryCode":"840","merchantPostalCode":zip,"distance":radius,"distanceUnit":"M"},
+      "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
+
+      var apiRequest = https.request(options, function (apiResponse) {
+        var chunks = [];
+  
+        apiResponse.on("data", function (chunk) {
+          chunks.push(chunk);
+        });
+  
+        apiResponse.on("end", function (chunk) {
+          var body = Buffer.concat(chunks);
+          var jsonRes = JSON.parse(body);
+          restaurantRes = jsonRes.merchantLocatorServiceResponse.response;
+          var resultArray = [];
+          // Check if 0 results
+          if (!restaurantRes) {
+            responseText += "no results from Visa"
+            res.json({
+              message: responseText,
+              zipCode: zip,
+              requestedRestaurantName: tempName,
+              requestedRestaurantAddress: tempLoc
+            })
+          }
+          else {
+            // Loop through each restaurant returned from the api search
+            // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
+            // Store each restaurant and its specific parameteres in a variable resultArray
+            for (var i = 0; i < restaurantRes.length; ++i) {
+              console.log(restaurantRes[i].responseValues)
+              var temp = new Object()
+              temp.name = restaurantRes[i].responseValues.visaStoreName
+              temp.paymentAcceptanceMethods = restaurantRes[i].responseValues.paymentAcceptanceMethod
+              temp.terminalType = restaurantRes[i].responseValues.terminalType
+              temp.address = restaurantRes[i].responseValues.merchantStreetAddress
+              temp.zipCode = restaurantRes[i].responseValues.merchantPostalCode
+              temp.city = restaurantRes[i].responseValues.merchantCity
+              if (restaurantRes[i].responseValues.merchantState) {
+                temp.state = restaurantRes[i].responseValues.merchantState
+              }
+              resultArray.push(temp)
+              responseText += "Visa result:" + temp.name + "\n" + temp.paymentAcceptanceMethods + "\n" + temp.terminalType + "\n" + temp.address + "\n" + temp.zipCode + "\n" + temp.city + "\n" + temp.url
+            }
+            temp.url = restaurantRes[0].responseValues.merchantUrl
+
+            resultArray.push(temp)
+          
+            // Take resultArray, return it as JSON
+            // res.json(resultArray)
+            
+            res.json({
+              fulfillmentText: responseText,
+              source: 'getmerchant'
+            })
+
+          }
+        });
+  
+        apiResponse.on("error", function (error) {
+          console.error(error);
+          res.json ({
+            message: "No restaurants were found with the given requirements.",
+            zipCode: zip,
+            requestedRestaurantName: tempName,
+            requestedRestaurantAddress: tempLoc
+          })
+        });
+    })
+    apiRequest.write(postData);
+  
+    apiRequest.end();
 
     }
 /*
