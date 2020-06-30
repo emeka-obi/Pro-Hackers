@@ -8,7 +8,9 @@ const fs = require('fs')
 const app = express()
 app.set('views', path.join(__dirname, 'views'))
 
-/*app.post('/getdata', (req, res) => {
+app.post('/getmerchant', (req, res) => {
+    //Get data from dialogflow
+    /*
     var responseText = '';
     var restName = "", restLoc, keyWord;
     for (const context of req.body.queryResult.outputContexts) {
@@ -20,45 +22,35 @@ app.set('views', path.join(__dirname, 'views'))
             if (!tempLoc.includes(zip)) tempLoc += "-" + zip;
             //Remove whitespaces and commas
             if (tempName.length != 0) {
-                restName = tempName.split(' ').join('-');
+                restName = tempName.split(' ').join('-'); //trim whitespace for parsing
             } 
             restLoc = tempLoc.split(' ').join('-');
             
             break;
         }
     }
-    //Option 1: specific restaurant
+    */
+    
+    //Carry out option based on which intent - NEEDS TO BE MOVED
+    /*//Option 1: specific restaurant
     if (req.body.queryResult.intent.displayName.includes("list-options - 1 - checkapi")) {
     }
     //Option 2: multiple restaurants, sort by wait time
     else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
-    }
-    //Search yelp
-    //var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
-    responseText = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
-    var searchUrl = "https://api.yelp.com/v3/businesses/search?term=ice-cream&latitude=33.835850&longitude=-118.366150"
-//     var config = {
-//         method: 'get',
-//         url: searchUrl,
-//         headers: {
-//             'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
-//         }
-//     };
+    }*/
     
-    var myPath = '/v3/businesses/search?term=' + restName + "&location=" + restLoc;
+    //yelp search
+    /* var myPath = '/v3/businesses/search?term=' + restName + "&location=" + restLoc;
     var options = {
         'method': 'GET',
         'hostname': 'api.yelp.com',
         'path': myPath,
         'headers': {
         'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
-  },
-  'maxRedirects': 20
-};*/
-
-
-
-app.post('/getmerchant', (req, res) => {
+        },
+        'maxRedirects': 20
+    };*/
+    //visa search
     var zip = 90007
     var options = {
       'method': 'POST',
