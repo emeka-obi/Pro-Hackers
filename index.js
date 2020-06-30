@@ -116,8 +116,41 @@ app.post('/getmerchant', (req, res) => {
             var splitName = temp.name
             restName = splitName.split(' ').join('-')
 
-            var yelpResult = searchYelp(restLoc, restName)
-            responseText += yelpResult;
+            //Yelp search
+    var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
+    var config = {
+        method: 'get',
+        url: searchUrl,
+        headers: {
+            'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
+        }
+    };
+    axios(config)
+        .then(function (response) {
+            var responseText = "";
+            var allRestaurants = JSON.stringify(response.data);
+            var restObj = JSON.parse(allRestaurants);
+
+            //Case where Visa API has no results
+            if(responseText.localeCompare("")){ //TODO: Add variables to responsetext
+              responseText += restObj.businesses[0].name + "found" + "\n" + restObj.businesses[0].location.displayAddress + restObj.businesses[0].display_phone;
+            }  
+            // Case where Visa API has results and we are adding to them
+            else { //TODO: Add variables to responsetext
+              responseText += restObj.businesses[0].name + "not found" + "\n";
+            }
+            //responseText += restObj.businesses[0].display_address;
+            //let responseText = req.body.queryResult.outputContexts.length;
+            // res.json({
+            //     fulfillmentText: responseText,
+            //     source: 'getmerchant'
+            // })
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+            //var yelpResult = searchYelp(restLoc, restName)
+            //responseText += yelpResult;
 
             res.json({
               fulfillmentText: responseText,
@@ -228,6 +261,7 @@ app.post('/getmerchant', (req, res) => {
               if (restaurantRes[i].responseValues.merchantState) {
                 temp.state = restaurantRes[i].responseValues.merchantState
               }
+              temp.url = restaurantRes[i].responseValues.merchantUrl
               resultArray.push(temp)
               responseText += "Visa result:" + temp.name + "\n" + temp.paymentAcceptanceMethods + "\n" + temp.terminalType + "\n" + temp.address + "\n" + temp.zipCode + "\n" + temp.city + "\n" + temp.url
             }
@@ -237,7 +271,7 @@ app.post('/getmerchant', (req, res) => {
           
             // Take resultArray, return it as JSON
             // res.json(resultArray)
-            
+
             res.json({
               fulfillmentText: responseText,
               source: 'getmerchant'
@@ -378,11 +412,11 @@ app.post('/getmerchant', (req, res) => {
             var restObj = JSON.parse(allRestaurants);
 
             //Case where Visa API has no results
-            if(responseText.localeCompare("")){ //TODO: Add variables
+            if(responseText.localeCompare("")){ //TODO: Add variables to responsetext
               responseText += restObj.businesses[0].name + "found" + "\n" + restObj.businesses[0].location.displayAddress + restObj.businesses[0].display_phone;
             }  
             // Case where Visa API has results and we are adding to them
-            else { //TODO: Add variables
+            else { //TODO: Add variables to responsetext
               responseText += restObj.businesses[0].name + "not found" + "\n";
             }
             //responseText += restObj.businesses[0].display_address;
