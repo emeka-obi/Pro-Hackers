@@ -43,6 +43,14 @@ app.post('/getmerchant', (req, res) => {
     }*/
 
     //Yelp search
+    var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
+    var config = {
+        method: 'get',
+        url: searchUrl,
+        headers: {
+            'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
+        }
+    };
     axios(config)
         .then(function (response) {
             var allRestaurants = JSON.stringify(response.data);
