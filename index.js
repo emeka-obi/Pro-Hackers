@@ -10,7 +10,7 @@ app.set('views', path.join(__dirname, 'views'))
 
 app.post('/getmerchant', (req, res) => {
     //Get data from dialogflow
-    /*
+
     var responseText = '';
     var restName = "", restLoc, keyWord;
     for (const context of req.body.queryResult.outputContexts) {
@@ -23,14 +23,13 @@ app.post('/getmerchant', (req, res) => {
             //Remove whitespaces and commas
             if (tempName.length != 0) {
                 restName = tempName.split(' ').join('-'); //trim whitespace for parsing
-            } 
+            }
             restLoc = tempLoc.split(' ').join('-');
-            
+
             break;
         }
     }
-    */
-    
+
     //Carry out option based on which intent - NEEDS TO BE MOVED
     /*//Option 1: specific restaurant
     if (req.body.queryResult.intent.displayName.includes("list-options - 1 - checkapi")) {
@@ -38,7 +37,7 @@ app.post('/getmerchant', (req, res) => {
     //Option 2: multiple restaurants, sort by wait time
     else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
     }*/
-    
+
     //yelp search
     /* var myPath = '/v3/businesses/search?term=' + restName + "&location=" + restLoc;
     var options = {
@@ -50,8 +49,8 @@ app.post('/getmerchant', (req, res) => {
         },
         'maxRedirects': 20
     };*/
-    //visa search
-    var zip = 90007
+    //call Visa merchant locator API
+  //  var zip = 90007
     var options = {
       'method': 'POST',
       'hostname': 'sandbox.api.visa.com',
@@ -65,14 +64,14 @@ app.post('/getmerchant', (req, res) => {
       },
       'maxRedirects': 20
     };
-  
+
     var apiRequest = https.request(options, function (apiResponse) {
       var chunks = [];
-  
+
       apiResponse.on("data", function (chunk) {
         chunks.push(chunk);
       });
-  
+
       apiResponse.on("end", function (chunk) {
         var body = Buffer.concat(chunks);
         var jsonRes = JSON.parse(body);
@@ -87,28 +86,32 @@ app.post('/getmerchant', (req, res) => {
         }
         res.json ({
           fulfillmentText: restaurantNames,
-          location: zip
+          location: zip,
+          requestedRestaurant: tempName,
+          addressLocation: tempLoc
         })
       });
-  
+
       apiResponse.on("error", function (error) {
         console.error(error);
         res.json ({
           fulfillmentText: "No restaurants found nearby",
-          location: zip
+          location: zip,
+          requestedRestaurant: tempName,
+          addressLocation: tempLoc
         })
       });
   })
-  
+
   var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
   "searchAttrList":{"merchantCategoryCode":["5812","5814"],"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
   "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
   apiRequest.write(postData);
-  
+
   apiRequest.end();
   })
-  
-  
+
+
   const PORT = process.env.PORT || 3000
-  
+
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
