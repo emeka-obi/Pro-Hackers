@@ -53,36 +53,32 @@ app.post('/getmerchant', (req, res) => {
         'maxRedirects': 20
     };
     
-    res.json ({
-          fulfillmentText: myPath,
-          source: 'getmerchant'
-        });
-})
-    
-//     var yelpRequest = https.request(options, function (res) {
-//     var chunks = [];
+    var yelpRequest = https.request(options, function (res) {
+    var chunks = [];
 
-//       res.on("data", function (chunk) {
-//         chunks.push(chunk);
-//       });
+      res.on("data", function (chunk) {
+        chunks.push(chunk);
+      });
 
-//       res.on("end", function (chunk) 
-//         var yelpBody = Buffer.concat(chunks);
-//         var yelpRes = JSON.parse(yelpBody);
-//         responseText += yelpRes.businesses[0].name;
+      res.on("end", function (chunk) 
+        var yelpBody = Buffer.concat(chunks);
+        var yelpRes = JSON.parse(yelpBody);
+        responseText += yelpRes.businesses[0].name;
          
-//         res.json ({
-//           fulfillmentText: responseText,
-//           source: 'getmerchant'
-//         })
-//       });
+        res.json ({
+          fulfillmentText: responseText,
+          source: 'getmerchant'
+        })
+      });
 
-//       res.on("error", function (error) {
-//         console.error(error);
-//       });
-//     });
+      res.on("error", function (error) {
+        console.error(error);
+      });
+    });
 
-//     yelpRequest.end();
+    yelpRequest.end();
+    
+})
 
     //var zip = 90007
 //     var visaOptions = {
