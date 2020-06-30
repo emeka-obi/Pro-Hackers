@@ -8,12 +8,29 @@ const fs = require('fs')
 const app = express()
 app.set('views', path.join(__dirname, 'views'))
 
+<<<<<<< HEAD
 app.post('/getmerchant', (req, res) => {
     
     //Gather data from dialogflow
 //     var restName, restLoc, keyWord, radius;
 //     for (const context of req.body.queryResult.outputContexts) {
 //         if (context.name.includes("zip") && !context.name.includes("followup")) {
+=======
+/*app.post('/getdata', (req, res) => {
+    var responseText = '';
+
+    var restName = "", restLoc, keyWord;
+    for (const context of req.body.queryResult.outputContexts) {
+        if (context.name.includes("zip") && !context.name.includes("followup")) {
+
+            //Parse out restaurant name and location
+            var tempName = context.parameters.restaurant;
+            var tempLoc = context.parameters.address;
+            var zip = context.parameters.zip;
+            if (!tempLoc.includes(zip)) tempLoc += "-" + zip;
+
+            //Remove whitespaces and commas
+>>>>>>> parent of 670ad1b... Update index.js
 
 //             //Parse out input details (restaurant name, location, keywords, search radius); if not given, variables will just be empty
 //             var tempName = context.parameters.restaurant; 
@@ -37,6 +54,23 @@ app.post('/getmerchant', (req, res) => {
 //         }
 //     }
     
+<<<<<<< HEAD
+=======
+    var myPath = '/v3/businesses/search?term=' + restName + "&location=" + restLoc;
+    var options = {
+        'method': 'GET',
+        'hostname': 'api.yelp.com',
+        'path': myPath,
+        'headers': {
+        'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
+  },
+  'maxRedirects': 20
+};*/
+
+
+
+app.post('/getmerchant', (req, res) => {
+>>>>>>> parent of 670ad1b... Update index.js
     var zip = 90007
     var options = {
       'method': 'POST',
