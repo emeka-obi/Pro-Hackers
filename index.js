@@ -76,7 +76,7 @@ app.post('/getmerchant', (req, res) => {
       });
     });
 
-    req.end();
+    yelpRequest.end();
 
     //var zip = 90007
     var visaOptions = {
