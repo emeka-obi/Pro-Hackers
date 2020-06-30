@@ -79,36 +79,57 @@ app.post('/getmerchant', (req, res) => {
         var body = Buffer.concat(chunks);
         var jsonRes = JSON.parse(body);
         var restaurantRes = jsonRes.merchantLocatorServiceResponse.response;
-        var restaurantNames = [];
-        //console.log(body.toString());
-      //  Below loop prints out each restaurant name
-      // to see all parameters change to restaurantRes[i]
-        for (var i = 0; i < restaurantRes.length; ++i) {
-          console.log(restaurantRes[i].responseValues.visaStoreName)
-          restaurantNames.push(restaurantRes[i].responseValues.visaStoreName)
+        var resultArray = [];
+        // Check if 0 results
+        if (!restaurantRes) {
+          res.json({
+            message: "No restaurants were found with the given requirements.",
+            zipCode: zip,
+            requestedRestaurantName: tempName,
+            requestedRestaurantAddress: tempLoc
+          })
         }
-        res.json ({
-          fulfillmentText: restaurantNames,
-          location: zip,
-          requestedRestaurant: tempName,
-          addressLocation: tempLoc
-        })
+        // Loop through each restaurant returned from the api search
+        // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
+        // Store each restaurant and its specific parameteres in a variable resultArray
+        for (var i = 0; i < restaurantRes.length; ++i) {
+          console.log(restaurantRes[i].responseValues)
+          var temp = new Object()
+          temp.name = restaurantRes[i].responseValues.visaStoreName
+          temp.paymentAcceptanceMethods = restaurantRes[i].responseValues.paymentAcceptanceMethod
+          temp.terminalType = restaurantRes[i].responseValues.terminalType
+          temp.address = restaurantRes[i].responseValues.merchantStreetAddress
+          temp.zipCode = restaurantRes[i].responseValues.merchantPostalCode
+          temp.city = restaurantRes[i].responseValues.merchantCity
+          if (restaurantRes[i].responseValues.merchantState) {
+            temp.state = restaurantRes[i].responseValues.merchantState
+          }
+          resultArray.push(temp)
+        }
+        // Take resultArray, return it as JSON
+        res.json(resultArray)
       });
 
       apiResponse.on("error", function (error) {
         console.error(error);
         res.json ({
-          fulfillmentText: "No restaurants found nearby",
-          location: zip,
-          requestedRestaurant: tempName,
-          addressLocation: tempLoc
+          message: "No restaurants were found with the given requirements.",
+          zipCode: zip,
+          requestedRestaurantName: tempName,
+          requestedRestaurantAddress: tempLoc
         })
       });
   })
-
-  var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
-  "searchAttrList":{"merchantCategoryCode":["5812","5814"],"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
-  "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
+  if (tempName) {
+    var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
+    "searchAttrList":{"merchantName": tempName,"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
+    "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
+  }
+  else {
+    var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
+    "searchAttrList":{"merchantCategoryCode":["5812","5814"],"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
+    "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
+  }
   apiRequest.write(postData);
 
   apiRequest.end();
