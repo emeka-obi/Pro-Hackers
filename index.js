@@ -40,14 +40,137 @@ app.post('/getmerchant', (req, res) => {
             break;
         }
     }
+    // Defining Visa API parameters
+    var options = {
+      'method': 'POST',
+      'hostname': 'sandbox.api.visa.com',
+      'key': fs.readFileSync("key_ad1d3f5e-0d23-4610-9a28-6aca251871b0.pem"),
+      'cert': fs.readFileSync("cert.pem"),
+      'path': '/merchantlocator/v1/locator',
+      'headers': {
+        'Accept': 'application/json',
+        'Authorization': 'Basic WlRQREpYVjc2M1U1T09aWTIxUFIyMUEwdFFhY09kcGljN2VQVUxXelpJOERUMWdVYzoybFZiNTc3dURxcFh6VTNOZktGVG1xYno1TzY=',
+        'Content-Type': 'application/json'
+      },
+      'maxRedirects': 20
+    };
 
-        //Carry out option based on which intent - NEEDS TO BE MOVED
-        /*//Option 1: specific restaurant
-        if (req.body.queryResult.intent.displayName.includes("list-options - 1 - checkapi")) {
+    //Carry out option based on which intent - NEEDS TO BE MOVED
+    //Option 1: specific restaurant
+    var restaurantRes;
+    if (req.body.queryResult.intent.displayName.includes("list-options - 1 - checkapi")) {
+      var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
+      "searchAttrList":{"merchantName": tempName,"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
+      "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
+
+      var apiRequest = https.request(options, function (apiResponse) {
+        var chunks = [];
+  
+        apiResponse.on("data", function (chunk) {
+          chunks.push(chunk);
+        });
+  
+        apiResponse.on("end", function (chunk) {
+          var body = Buffer.concat(chunks);
+          var jsonRes = JSON.parse(body);
+          restaurantRes = jsonRes.merchantLocatorServiceResponse.response;
+          var resultArray = [];
+          // Check if 0 results
+          if (!restaurantRes) {
+            res.json({
+              message: "False",
+              zipCode: zip,
+              requestedRestaurantName: tempName,
+              requestedRestaurantAddress: tempLoc
+            })
+          }
+          else {
+            // Loop through each restaurant returned from the api search
+            // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
+            // Store each restaurant and its specific parameteres in a variable resultArray
+            console.log(restaurantRes[0].responseValues)
+            var temp = new Object()
+            temp.name = restaurantRes[0].responseValues.visaStoreName
+            temp.paymentAcceptanceMethods = restaurantRes[0].responseValues.paymentAcceptanceMethod
+            temp.terminalType = restaurantRes[0].responseValues.terminalType
+            temp.address = restaurantRes[0].responseValues.merchantStreetAddress
+            temp.zipCode = restaurantRes[0].responseValues.merchantPostalCode
+            temp.city = restaurantRes[0].responseValues.merchantCity
+            if (restaurantRes[0].responseValues.merchantState) {
+              temp.state = restaurantRes[0].responseValues.merchantState
+            }
+            temp.url = restaurantRes[0].responseValues.merchantUrl
+
+            resultArray.push(temp)
+          
+            // Take resultArray, return it as JSON
+            // res.json(resultArray)
+
+            // TODO: Reformat the same as Yelp
+            responseText += temp.name + "\n" + temp.paymentAcceptanceMethods + "\n" + temp.terminalType + "\n" + temp.address + "\n" + temp.zipCode + "\n" + temp.city + "\n" + temp.url
+
+            var splitLoc = temp.address + "-" + temp.zipCode + "-" + temp.city;
+            restLoc = splitLoc.split(' ').join('-')
+
+            var splitName = temp.name
+            restName = splitName.split(' ').join('-')
+          }
+        });
+  
+        apiResponse.on("error", function (error) {
+          console.error(error);
+          res.json ({
+            message: "No restaurants were found with the given requirements.",
+            zipCode: zip,
+            requestedRestaurantName: tempName,
+            requestedRestaurantAddress: tempLoc
+          })
+        });
+    })
+    apiRequest.write(postData);
+  
+    apiRequest.end();
+
+    //Yelp search
+    var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
+    var config = {
+        method: 'get',
+        url: searchUrl,
+        headers: {
+            'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
         }
-        //Option 2: multiple restaurants, sort by wait time
-        else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
-        }*/
+    };
+    axios(config)
+        .then(function (response) {
+            var allRestaurants = JSON.stringify(response.data);
+            var restObj = JSON.parse(allRestaurants);
+
+            //Case where Visa API has no results
+            if(responseText.localeCompare("")){ //TODO: Add variables
+              responseText += restObj.businesses[0].name + "\n" + restObj.businesses[0].location.displayAddress + restObj.businesses[0].display_phone;
+            }  
+            // Case where Visa API has results and we are adding to them
+            else { //TODO: Add variables
+              responseText += restObj.businesses[0].name + "\n";
+            }
+            //responseText += restObj.businesses[0].display_address;
+            //let responseText = req.body.queryResult.outputContexts.length;
+
+            res.json({
+                fulfillmentText: responseText,
+                source: 'getmerchant'
+            })
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    }
+    
+    //Option 2: multiple restaurants, sort by wait time
+    else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
+
+    }
 
         //Yelp search
         var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
@@ -77,19 +200,6 @@ app.post('/getmerchant', (req, res) => {
             });
     //call Visa merchant locator API
   //  var zip = 90007
-    var options = {
-      'method': 'POST',
-      'hostname': 'sandbox.api.visa.com',
-      'key': fs.readFileSync("key_ad1d3f5e-0d23-4610-9a28-6aca251871b0.pem"),
-      'cert': fs.readFileSync("cert.pem"),
-      'path': '/merchantlocator/v1/locator',
-      'headers': {
-        'Accept': 'application/json',
-        'Authorization': 'Basic WlRQREpYVjc2M1U1T09aWTIxUFIyMUEwdFFhY09kcGljN2VQVUxXelpJOERUMWdVYzoybFZiNTc3dURxcFh6VTNOZktGVG1xYno1TzY=',
-        'Content-Type': 'application/json'
-      },
-      'maxRedirects': 20
-    };
 
     var apiRequest = https.request(options, function (apiResponse) {
       var chunks = [];
