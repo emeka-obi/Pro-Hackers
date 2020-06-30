@@ -13,7 +13,7 @@ app.use(express.json())
 app.post('/getmerchant', (req, res) => {
     //Get data from dialogflow
 
-    var responseText = '';
+    var responseText = "start";
     var restName, restLoc, keyWord, tempName, zip, tempLoc,radius;
     for (const context of req.body.queryResult.outputContexts) {
         if (context.name.includes("zip") && !context.name.includes("followup")) {
@@ -79,7 +79,7 @@ app.post('/getmerchant', (req, res) => {
           if (!restaurantRes) {
             responseText += "no results from Visa"
             res.json({
-              message: "False",
+              message: responseText,
               zipCode: zip,
               requestedRestaurantName: tempName,
               requestedRestaurantAddress: tempLoc
@@ -115,6 +115,12 @@ app.post('/getmerchant', (req, res) => {
 
             var splitName = temp.name
             restName = splitName.split(' ').join('-')
+
+            res.json({
+              fulfillmentText: responseText,
+              source: 'getmerchant'
+            })
+
           }
         });
   
@@ -132,6 +138,8 @@ app.post('/getmerchant', (req, res) => {
   
     apiRequest.end();
 
+
+    /*
     //Yelp search
     var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
     var config = {
@@ -164,7 +172,7 @@ app.post('/getmerchant', (req, res) => {
         })
         .catch(function (error) {
             console.log(error);
-        });
+        });*/
 
     }
     
