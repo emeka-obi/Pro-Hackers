@@ -42,9 +42,9 @@ app.post('/getmerchant', (req, res) => {
     }*/
 
     //yelp search
-    var myPath = '/v3/businesses/search?term=' + restName + "&location=" + restLoc;
+    var myPath = '/v3/businesses/search?term=panda-express&location=figueroa-90007";
     var yelpOptions = {
-        'method': 'POST',
+        'method': 'GET',
         'hostname': 'api.yelp.com',
         'path': myPath,
         'headers': {
