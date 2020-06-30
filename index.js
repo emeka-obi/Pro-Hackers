@@ -1,4 +1,5 @@
 const express = require('express')
+const axios = require('axios')
 const http = require('http')
 const https = require('follow-redirects').https;
 const path = require('path')
@@ -13,22 +14,29 @@ app.post('/getmerchant', (req, res) => {
     //Get data from dialogflow
 
     var responseText = '';
-    var restName, restLoc, keyWord;
+    var restName, restLoc, keyWord, tempName, zip, tempLoc,radius;
     for (const context of req.body.queryResult.outputContexts) {
         if (context.name.includes("zip") && !context.name.includes("followup")) {
             //Parse out restaurant name and location
-            var tempName = context.parameters.restaurant;
-            var tempLoc = context.parameters.address;
-            var zip = context.parameters.zip;
+            tempName = context.parameters.restaurant;
+            tempLoc = context.parameters.address;
+            var tempKeyWord = context.parameters.searchkeywords;
+            var tempRad = context.parameters.unitlength;
+            zip = context.parameters.zip;
             if (tempLoc && !tempLoc.includes(zip)) tempLoc += "-" + zip;
             //Remove whitespaces and commas
             if (tempName && tempName.length != 0) {
                 restName = tempName.split(' ').join('-'); //trim whitespace for parsing
             }
-            if (restLoc) {
+            if (tempLoc) {
                 restLoc = tempLoc.split(' ').join('-');
             }
-
+            if(tempKeyWord){
+                keyWord = tempKeyWord.split(' ').join('-');
+            }
+            if(tempRad){
+                radius = tempRad.split(' ').join('-');
+            }
             break;
         }
     }
