@@ -180,7 +180,7 @@ app.post('/getmerchant', (req, res) => {
     else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
 
     }
-
+/*
         //Yelp search
         var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
         var config = {
@@ -278,7 +278,7 @@ app.post('/getmerchant', (req, res) => {
 
   apiRequest.end();
   })
-
+*/
 
   const PORT = process.env.PORT || 3000
 
