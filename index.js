@@ -62,7 +62,7 @@ app.post('/getmerchant', (req, res) => {
 
             res.json({
                 fulfillmentText: responseText,
-                source: 'getdata'
+                source: 'getmerchant'
             })
         })
         .catch(function (error) {
