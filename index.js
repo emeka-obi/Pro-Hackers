@@ -42,13 +42,15 @@ app.post('/getmerchant', (req, res) => {
     }*/
 
     //yelp search
-    var myPath = '/v3/businesses/search?term=panda-express&location=figueroa-90007";
+    var myPath = '/v3/businesses/search?term=" + restName + "&location="+ restLoc;
     var yelpOptions = {
         'method': 'GET',
         'hostname': 'api.yelp.com',
         'path': myPath,
         'headers': {
-        'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
+            'Accept': 'application/json',
+            'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx',
+            'Content-Type': 'application/json'
         },
         'maxRedirects': 20
     };
