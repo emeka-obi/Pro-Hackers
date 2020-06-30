@@ -11,31 +11,31 @@ app.set('views', path.join(__dirname, 'views'))
 app.post('/getmerchant', (req, res) => {
     
     //Gather data from dialogflow
-    var restName, restLoc, keyWord, radius;
-    for (const context of req.body.queryResult.outputContexts) {
-        if (context.name.includes("zip") && !context.name.includes("followup")) {
+//     var restName, restLoc, keyWord, radius;
+//     for (const context of req.body.queryResult.outputContexts) {
+//         if (context.name.includes("zip") && !context.name.includes("followup")) {
 
-            //Parse out input details (restaurant name, location, keywords, search radius); if not given, variables will just be empty
-            var tempName = context.parameters.restaurant; 
-            if (tempName.length != 0) {
-                restName = tempName.split(' ').join('-'); //this, line 88, and 93 remove whitespace so it's easier to pass into the search path
-            } 
+//             //Parse out input details (restaurant name, location, keywords, search radius); if not given, variables will just be empty
+//             var tempName = context.parameters.restaurant; 
+//             if (tempName.length != 0) {
+//                 restName = tempName.split(' ').join('-'); //this, line 88, and 93 remove whitespace so it's easier to pass into the search path
+//             } 
             
-            var tempLoc = context.parameters.address;
-            var inZip = context.parameters.zip;
-            if(tempLoc.length == 0) restLoc = inZip;
-            else {
-                if (!tempLoc.includes(inZip)) tempLoc += "-" + inZip;
-                restLoc = tempLoc.split(' ').join('-');
-            }
-            //If restaurant name isn't given, then check for keyword (only one or the other will be given)
+//             var tempLoc = context.parameters.address;
+//             var inZip = context.parameters.zip;
+//             if(tempLoc.length == 0) restLoc = inZip;
+//             else {
+//                 if (!tempLoc.includes(inZip)) tempLoc += "-" + inZip;
+//                 restLoc = tempLoc.split(' ').join('-');
+//             }
+//             //If restaurant name isn't given, then check for keyword (only one or the other will be given)
 //             if(restName.length == 0){
 //                 var tempKey = context.parameters.searchkeywords;
 //                 keyWord = tempKey.split(' ').join('-');
 //             }
-            break;
-        }
-    }
+//             break;
+//         }
+//     }
     
     var zip = 90007
     var options = {
