@@ -41,25 +41,42 @@ app.post('/getmerchant', (req, res) => {
         }
     }
 
-    //Carry out option based on which intent - NEEDS TO BE MOVED
-    /*//Option 1: specific restaurant
-    if (req.body.queryResult.intent.displayName.includes("list-options - 1 - checkapi")) {
-    }
-    //Option 2: multiple restaurants, sort by wait time
-    else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
-    }*/
+        //Carry out option based on which intent - NEEDS TO BE MOVED
+        /*//Option 1: specific restaurant
+        if (req.body.queryResult.intent.displayName.includes("list-options - 1 - checkapi")) {
+        }
+        //Option 2: multiple restaurants, sort by wait time
+        else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
+        }*/
 
-    //yelp search
-    /* var myPath = '/v3/businesses/search?term=' + restName + "&location=" + restLoc;
-    var options = {
-        'method': 'GET',
-        'hostname': 'api.yelp.com',
-        'path': myPath,
-        'headers': {
-        'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
-        },
-        'maxRedirects': 20
-    };*/
+        //Yelp search
+        var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
+        var config = {
+            method: 'get',
+            url: searchUrl,
+            headers: {
+                'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
+            }
+        };
+        axios(config)
+            .then(function (response) {
+                var allRestaurants = JSON.stringify(response.data);
+                var restObj = JSON.parse(allRestaurants);
+
+                responseText += restObj.businesses[0].name;
+                //responseText += restObj.businesses[0].display_address;
+                //let responseText = req.body.queryResult.outputContexts.length;
+
+                res.json({
+                    fulfillmentText: responseText,
+                    source: 'getmerchant'
+                })
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    })
     //call Visa merchant locator API
   //  var zip = 90007
     var options = {
