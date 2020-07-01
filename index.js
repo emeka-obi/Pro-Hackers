@@ -155,7 +155,6 @@ app.post('/getmerchant', (req, res) => {
 
     //Option 2: multiple restaurants, sort by wait time
     else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
-      responseText += zip
       if(!keyWord || keyWord.localeCompare("") == 0){
         if(!radius){
           radius = 5;
@@ -191,7 +190,7 @@ app.post('/getmerchant', (req, res) => {
               // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
               // Store each restaurant and its specific parameteres in a variable resultArray
               responseText += "Here is a list of restaurants you could go to! "
-              for (var i = 0; i < restaurantRes.length; ++i) {
+              /*for (var i = 0; i < restaurantRes.length; ++i) {
                 console.log(restaurantRes[i].responseValues)
                 var temp = new Object()
                 temp.name = restaurantRes[i].responseValues.visaStoreName
@@ -206,7 +205,7 @@ app.post('/getmerchant', (req, res) => {
                 temp.url = restaurantRes[i].responseValues.merchantUrl
                 resultArray.push(temp)
                 responseText += " " + (i + 1) + ". " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
-              }
+              }*/
 
               responseText += " For more information on one of these options, search its name"
 
@@ -274,7 +273,7 @@ app.post('/getmerchant', (req, res) => {
       var allRestaurants = JSON.stringify(response.data);
       var restObj = JSON.parse(allRestaurants);
 
-      var yelpResponse = "" + restLoc
+      var yelpResponse = ""
 
       for(var i = 0; i < (response.data.businesses.length < 5 ? response.data.businesses.length : 5); i++){
         yelpResponse += "  \n " + (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[i].location.address1 + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
