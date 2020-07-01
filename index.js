@@ -272,7 +272,7 @@ app.post('/getmerchant', (req, res) => {
 
       var yelpResponse = ""
 
-      for(var i = 0; i < response.data.businesses.length < 5 ? response.data.businesses.length : 5; i++){
+      for(var i = 0; i < (response.data.businesses.length < 5 ? response.data.businesses.length : 5); i++){
         yelpResponse += "  \n " + (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[i].location.display_address + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
       }
       response = yelpResponse
