@@ -200,9 +200,8 @@ app.post('/getmerchant', (req, res) => {
               }
               temp.url = restaurantRes[i].responseValues.merchantUrl
               resultArray.push(temp)
-              responseText += (i + 1) + ". " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + "            "
+              responseText += (i + 1) + ". " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + ". It has a wait time of " + (i * 2 + 3)
             }
-            temp.url = restaurantRes[0].responseValues.merchantUrl
 
             resultArray.push(temp)
 
@@ -282,6 +281,7 @@ app.post('/getmerchant', (req, res) => {
 
    }
 
+   // Taken from stack overflow
    String.prototype.toProperCase = function () {
     return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
   };
