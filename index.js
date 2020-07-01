@@ -174,7 +174,7 @@ app.post('/getmerchant', (req, res) => {
             var resultArray = [];
             // Check if 0 results
             if (!restaurantRes) {
-              responseText += "no results from Visa"
+              responseText += "no results from Visa" + keyWord
               res.json({
                 message: responseText,
                 zipCode: zip,
