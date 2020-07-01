@@ -59,10 +59,6 @@ app.post('/getmerchant', (req, res) => {
     //Option 1: specific restaurant
     var restaurantRes;
     if (req.body.queryResult.intent.displayName.includes("list-options - 1 - checkapi")) {
-        res.json({
-              fulfillmentText: "hi",
-              source: 'getmerchant'
-            })
       var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
       "searchAttrList":{"merchantName": tempName,"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
       "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
@@ -127,8 +123,6 @@ app.post('/getmerchant', (req, res) => {
             res.json({
               fulfillmentText: responseText,
               source: 'getmerchant'
-            }).catch(function (error) {
-                console.log(error);
             })
           });
         });
