@@ -241,7 +241,7 @@ app.post('/getmerchant', (req, res) => {
           responseText += " For more information on one of these options, search its name"
 
           res.json({
-            fulfillmentText: responseText,
+            fulfillmentMessages: responseText,
             source: 'getmerchant'
           }).catch(function (error) {
               console.log(error);
@@ -273,7 +273,7 @@ app.post('/getmerchant', (req, res) => {
       var yelpResponse = "correct"
 
       for(var i = 0; i < response.data.businesses.length; i++){
-        yelpResponse += " " + (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[i].location.display_address + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
+        yelpResponse += "\n " + (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[i].location.display_address + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
       }
       response = yelpResponse
       return response;
