@@ -117,9 +117,9 @@ app.post('/getmerchant', (req, res) => {
             restName = splitName.split(' ').join('-')
 
 
-            searchYelp(restLoc, restName).then(function(response) {
+            searchYelp(restLoc, restName, responseText).then(function(response) {
               responseText += response;
-              console.log(responseText)
+
               res.json({
                 fulfillmentText: responseText,
                 source: 'getmerchant'
@@ -355,7 +355,7 @@ app.post('/getmerchant', (req, res) => {
   */
   })
 
-  async function searchYelp(restLoc, restName){
+  async function searchYelp(restLoc, restName, responsText){
      //Yelp search
 
      var searchUrl = "https://api.yelp.com/v3/businesses/search?location=" + restLoc + "&term=" + restName;
@@ -369,7 +369,7 @@ app.post('/getmerchant', (req, res) => {
 
         return axios(config)
          .then(function (response) {
-           var responseText = "";
+
              var allRestaurants = JSON.stringify(response.data);
              var restObj = JSON.parse(allRestaurants);
 
