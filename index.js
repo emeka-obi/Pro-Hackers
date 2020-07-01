@@ -59,18 +59,24 @@ app.post('/getmerchant', (req, res) => {
     //Option 1: specific restaurant
     var restaurantRes;
     if (req.body.queryResult.intent.displayName.includes("list-options - 1 - checkapi")) {
-      var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
-      "searchAttrList":{"merchantName": tempName,"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
-      "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
+        res.json({
+              fulfillmentText: "hi",
+              source: 'getmerchant'
+            }).catch(function (error) {
+                console.log(error);
+            })
+//       var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
+//       "searchAttrList":{"merchantName": tempName,"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
+//       "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
 
-      var apiRequest = https.request(options, function (apiResponse) {
-        var chunks = [];
+//       var apiRequest = https.request(options, function (apiResponse) {
+//         var chunks = [];
 
-        apiResponse.on("data", function (chunk) {
-          chunks.push(chunk);
-        });
+//         apiResponse.on("data", function (chunk) {
+//           chunks.push(chunk);
+//         });
 
-        apiResponse.on("end", function (chunk) {
+//         apiResponse.on("end", function (chunk) {
 //           var body = Buffer.concat(chunks);
 //           var jsonRes = JSON.parse(body);
 //           restaurantRes = jsonRes.merchantLocatorServiceResponse.response;
@@ -130,29 +136,21 @@ app.post('/getmerchant', (req, res) => {
 //                 console.log(error);
 //             })
 //           });
-            res.json({
-              fulfillmentText: "hi",
-              source: 'getmerchant'
-            }).catch(function (error) {
-                console.log(error);
-            })
         });
 
-        apiResponse.on("error", function (error) {
-          console.error(error);
-          res.json ({
-            message: "No restaurants were found with the given requirements.",
-            zipCode: zip,
-            requestedRestaurantName: tempName,
-            requestedRestaurantAddress: tempLoc
-          })
-        });
-    })
-    apiRequest.write(postData);
+//         apiResponse.on("error", function (error) {
+//           console.error(error);
+//           res.json ({
+//             message: "No restaurants were found with the given requirements.",
+//             zipCode: zip,
+//             requestedRestaurantName: tempName,
+//             requestedRestaurantAddress: tempLoc
+//           })
+//         });
+//     })
+//     apiRequest.write(postData);
 
-    apiRequest.end();
-
-
+//     apiRequest.end();
 
     }
 
