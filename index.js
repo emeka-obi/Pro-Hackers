@@ -108,7 +108,7 @@ app.post('/getmerchant', (req, res) => {
             // res.json(resultArray)
 
             // TODO: Reformat the same as Yelp
-            responseText += "You should go to " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + temp.zipCode + temp.city + ". They accept " + temp.paymentAcceptanceMethods + " and use " + temp.terminalType + ". You can reach them at " + temp.url
+            responseText += "You should go to " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + " " + temp.zipCode + " " + temp.city.toProperCase + ". They accept " + temp.paymentAcceptanceMethods + " and use " + temp.terminalType.toProperCase + ". You can reach them at " + temp.url
 
             var splitLoc = temp.address + "-" + temp.zipCode + "-" + temp.city;
             restLoc = splitLoc.split(' ').join('-')
@@ -120,7 +120,7 @@ app.post('/getmerchant', (req, res) => {
             
 
           }
-          searchYelp(restLoc, restName, responseText).then(function(response) {
+          searchYelp(restLoc, restName, restaurantRes).then(function(response) {
             responseText += response;
 
             res.json({
@@ -256,7 +256,7 @@ app.post('/getmerchant', (req, res) => {
 
              //Case where Visa API has no results
            //  if(responseText.localeCompare("")){ //TODO: Add variables
-             if(responseText.localeCompare("") != 0){ //TODO: Add variables to responsetext
+             if(!restaurantRes){ //TODO: Add variables to responsetext
               responseText += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.displayAddress +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + response.data.businesses[0].url + ". They are currently using " 
               for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
                responseText += response.data.businesses[i].transactions
