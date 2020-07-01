@@ -77,13 +77,13 @@ app.post('/getmerchant', (req, res) => {
           var resultArray = [];
           // Check if 0 results
           if (!restaurantRes) {
-            responseText += "no results from Visa"
-            res.json({
-              message: responseText,
-              zipCode: zip,
-              requestedRestaurantName: tempName,
-              requestedRestaurantAddress: tempLoc
-            })
+            // responseText += "no results from Visa"
+            // res.json({
+            //   message: responseText,
+            //   zipCode: zip,
+            //   requestedRestaurantName: tempName,
+            //   requestedRestaurantAddress: tempLoc
+            // })
           }
           else {
             // Loop through each restaurant returned from the api search
@@ -108,7 +108,7 @@ app.post('/getmerchant', (req, res) => {
             // res.json(resultArray)
 
             // TODO: Reformat the same as Yelp
-            responseText += "Visa result:" + temp.name + "\n" + temp.paymentAcceptanceMethods + "\n" + temp.terminalType + "\n" + temp.address + "\n" + temp.zipCode + "\n" + temp.city + "\n" + temp.url
+            responseText += "You should go to " + temp.name + " at " + temp.address + temp.zipCode + temp.city + ". They accept " + temp.paymentAcceptanceMethods + " and use " + temp.terminalType + ". You can reach them at " + temp.url
 
             var splitLoc = temp.address + "-" + temp.zipCode + "-" + temp.city;
             restLoc = splitLoc.split(' ').join('-')
@@ -117,18 +117,19 @@ app.post('/getmerchant', (req, res) => {
             restName = splitName.split(' ').join('-')
 
 
-            searchYelp(restLoc, restName, responseText).then(function(response) {
-              responseText += response;
-
-              res.json({
-                fulfillmentText: responseText,
-                source: 'getmerchant'
-              }).catch(function (error) {
-                  console.log(error);
-              })
-            });
+            
 
           }
+          searchYelp(restLoc, restName, responseText).then(function(response) {
+            responseText += response;
+
+            res.json({
+              fulfillmentText: responseText,
+              source: 'getmerchant'
+            }).catch(function (error) {
+                console.log(error);
+            })
+          });
         });
 
         apiResponse.on("error", function (error) {
@@ -184,6 +185,7 @@ app.post('/getmerchant', (req, res) => {
             // Loop through each restaurant returned from the api search
             // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
             // Store each restaurant and its specific parameteres in a variable resultArray
+            responeText += "Here is a list of restaurants you could go to!"
             for (var i = 0; i < restaurantRes.length; ++i) {
               console.log(restaurantRes[i].responseValues)
               var temp = new Object()
@@ -198,7 +200,7 @@ app.post('/getmerchant', (req, res) => {
               }
               temp.url = restaurantRes[i].responseValues.merchantUrl
               resultArray.push(temp)
-              responseText += "Visa result:" + temp.name + "\n" + temp.paymentAcceptanceMethods + "\n" + temp.terminalType + "\n" + temp.address + "\n" + temp.zipCode + "\n" + temp.city + "\n" + temp.url
+              responseText += i + ". " + temp.name + " at " + temp.address + temp.zipCode + temp.city
             }
             temp.url = restaurantRes[0].responseValues.merchantUrl
 
@@ -255,13 +257,19 @@ app.post('/getmerchant', (req, res) => {
              //Case where Visa API has no results
            //  if(responseText.localeCompare("")){ //TODO: Add variables
              if(responseText.localeCompare("") != 0){ //TODO: Add variables to responsetext
-               responseText += restObj.businesses[0].name + "found" + "\n" + restObj.businesses[0].location.display_address + restObj.businesses[0].display_phone;
-             }
+              responseText +=  "You can call them at " + response.data.businesses[0].display_phone + ". They are currently using "
+              for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
+                responseText += response.data.businesses[i].transactions
+              }
+            }
              // Case where Visa API has results and we are adding to them
            //  else { //TODO: Add variables
              else { //TODO: Add variables to responsetext
-               responseText += restObj.businesses[0].name + "not found" + "\n";
+              responseText += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.displayAddress +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + response.data.businesses[0].url + ". They are currently using " 
+              for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
+               responseText += response.data.businesses[i].transactions
              }
+            }
              //responseText += restObj.businesses[0].display_address;
              //let responseText = req.body.queryResult.outputContexts.length;
              response = responseText
