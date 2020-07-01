@@ -78,12 +78,6 @@ app.post('/getmerchant', (req, res) => {
           // Check if 0 results
           if (!restaurantRes) {
             responseText += "no results from Visa"
-            res.json({
-              message: responseText,
-              zipCode: zip,
-              requestedRestaurantName: tempName,
-              requestedRestaurantAddress: tempLoc
-            })
           }
           else {
             // Loop through each restaurant returned from the api search
