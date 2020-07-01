@@ -116,8 +116,8 @@ app.post('/getmerchant', (req, res) => {
             var splitName = temp.name
             restName = splitName.split(' ').join('-')
 
-        
-            searchYelp("90007", "Starbucks").then(function(response) {
+
+            searchYelp(restLoc, restName).then(function(response) {
               responseText += response;
               console.log(responseText)
               res.json({
