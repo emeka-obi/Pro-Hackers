@@ -24,6 +24,9 @@ app.post('/getmerchant', (req, res) => {
             var tempRad = context.parameters.unitlength;
             zip = context.parameters.zip;
             if (tempLoc && !tempLoc.includes(zip)) tempLoc += "-" + zip;
+            else if(!tempLoc){
+              tempLoc = zip;
+            }
             //Remove whitespaces and commas
             if (tempName && tempName.length != 0) {
                 restName = tempName.split(' ').join('-'); //trim whitespace for parsing
