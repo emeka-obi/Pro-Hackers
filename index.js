@@ -185,7 +185,7 @@ app.post('/getmerchant', (req, res) => {
             // Loop through each restaurant returned from the api search
             // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
             // Store each restaurant and its specific parameteres in a variable resultArray
-            responeText += "Here is a list of restaurants you could go to!"
+            responseText += "Here is a list of restaurants you could go to!"
             // for (var i = 0; i < restaurantRes.length; ++i) {
             //   console.log(restaurantRes[i].responseValues)
             //   var temp = new Object()
