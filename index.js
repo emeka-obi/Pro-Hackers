@@ -120,7 +120,7 @@ app.post('/getmerchant', (req, res) => {
 
           }
           searchYelp(restLoc, restName, responseText, restaurantRes).then(function(response) {
-            // responseText += response;
+            responseText += response;
             responseText += " Would you like to go to the menu?"
 
             res.json({
@@ -236,7 +236,7 @@ app.post('/getmerchant', (req, res) => {
       }
       else {
         responseText += "Here is a list of restaurants you could go to! "
-        searchYelpMultiple(restLoc, keyWord, responseText)
+        responseText += searchYelpMultiple(restLoc, keyWord, responseText)
 
         responseText += " For more information on one of these options, search its name"
 
@@ -267,10 +267,12 @@ app.post('/getmerchant', (req, res) => {
       var allRestaurants = JSON.stringify(response.data);
       var restObj = JSON.parse(allRestaurants);
 
+      var yelpResponse = ""
+
       for(var i = 0; i < response.data.businesses.length; i++){
-        responseText += " " (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[0].location.display_address + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
+        yelpResponse += " " (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[0].location.display_address + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
       }
-      response = responseText
+      response = yelpResponse
       return response;
   })
 
@@ -298,25 +300,27 @@ app.post('/getmerchant', (req, res) => {
              var allRestaurants = JSON.stringify(response.data);
              var restObj = JSON.parse(allRestaurants);
 
+             var yelpResponse = ""
+
              //Case where Visa API has no results
            //  if(responseText.localeCompare("")){ //TODO: Add variables
              if(!restaurantRes){ //TODO: Add variables to responsetext
-              responseText += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.displayAddress +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + response.data.businesses[0].url + ". They are currently using " 
+              yelpResponse += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.displayAddress +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + response.data.businesses[0].url + ". They are currently using " 
               for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
-               responseText += response.data.businesses[0].transactions[i]
+               yelpResponse += response.data.businesses[0].transactions[i]
              }
             }
              // Case where Visa API has results and we are adding to them
            //  else { //TODO: Add variables
              else { //TODO: Add variables to responsetext
-              responseText +=  "You can call them at " + response.data.businesses[0].display_phone + ". They are currently using "
+              yelpResponse +=  "You can call them at " + response.data.businesses[0].display_phone + ". They are currently using "
               for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
-                responseText += response.data.businesses[0].transactions[i]
+                yelpResponse += response.data.businesses[0].transactions[i]
               }
             }
              //responseText += restObj.businesses[0].display_address;
              //let responseText = req.body.queryResult.outputContexts.length;
-             response = responseText
+             response = yelpResponse
              return response;
          })
 
