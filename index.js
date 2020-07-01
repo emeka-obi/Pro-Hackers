@@ -21,7 +21,7 @@ app.post('/getmerchant', (req, res) => {
             tempName = context.parameters.restaurant;
             tempLoc = context.parameters.address;
             var tempKeyWord = context.parameters.searchkeywords;
-            var tempRad = context.parameters.unitlength.amount;
+            radius = context.parameters.unitlength.amount;
             zip = context.parameters.zip;
             if (tempLoc && !tempLoc.includes(zip)) tempLoc += "-" + zip;
             else if(!tempLoc){
@@ -36,9 +36,6 @@ app.post('/getmerchant', (req, res) => {
             }
             if(tempKeyWord){
                 keyWord = tempKeyWord.split(' ').join('-');
-            }
-            if(tempRad){
-                radius = tempRad.split(' ').join('-');
             }
             break;
         }
