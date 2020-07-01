@@ -123,10 +123,21 @@ app.post('/getmerchant', (req, res) => {
             responseText += response;
             responseText += " Would you like to go to the menu?"
 
-            res.json({
-              fulfillmentText: responseText,
+            res.json(
+              {
+                "fulfillmentMessages": [
+                  {
+                    "text": {
+                      "text": [
+                        responseText
+                      ]
+                    }
+                  }
+                ],
+              
+              // fulfillmentText: responseText,
               source: 'getmerchant'
-            }).catch(function (error) {
+              }).catch(function (error) {
                 console.log(error);
             })
           });
