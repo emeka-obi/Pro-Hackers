@@ -136,7 +136,7 @@ app.post('/getmerchant', (req, res) => {
 //                 console.log(error);
 //             })
 //           });
-        });
+//         });
 
 //         apiResponse.on("error", function (error) {
 //           console.error(error);
