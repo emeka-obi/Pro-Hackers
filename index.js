@@ -236,7 +236,7 @@ app.post('/getmerchant', (req, res) => {
 
   })
 
-  async function searchYelp(restLoc, restName, responseText){
+  async function searchYelp(restLoc, restName, restaurantRes){
      //Yelp search
 
      var searchUrl = "https://api.yelp.com/v3/businesses/search?location=" + restLoc + "&term=" + restName;
