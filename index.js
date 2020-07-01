@@ -13,7 +13,7 @@ app.use(express.json())
 app.post('/getmerchant', (req, res) => {
     //Get data from dialogflow
 
-    var responseText = "start";
+    var responseText = "";
     var restName, restLoc, keyWord, tempName, zip, tempLoc,radius;
     for (const context of req.body.queryResult.outputContexts) {
         if (context.name.includes("zip") && !context.name.includes("followup")) {
@@ -116,13 +116,15 @@ app.post('/getmerchant', (req, res) => {
             var splitName = temp.name
             restName = splitName.split(' ').join('-')
 
-      
-            searchYelp("90007", "Starbucks").then(function(response) {
+
+            searchYelp(restLoc, restName, responseText).then(function(response) {
               responseText += response;
-              console.log(responseText)
+
               res.json({
                 fulfillmentText: responseText,
                 source: 'getmerchant'
+              }).catch(function (error) {
+                  console.log(error);
               })
             });
 
@@ -144,40 +146,6 @@ app.post('/getmerchant', (req, res) => {
     apiRequest.end();
 
 
-
-
-    /*
-    //Yelp search
-    var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
-    var config = {
-        method: 'get',
-        url: searchUrl,
-        headers: {
-            'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
-        }
-    };
-    axios(config)
-        .then(function (response) {
-            var allRestaurants = JSON.stringify(response.data);
-            var restObj = JSON.parse(allRestaurants);
-            //Case where Visa API has no results
-            if(responseText.localeCompare("")){ //TODO: Add variables
-              responseText += restObj.businesses[0].name + "found" + "\n" + restObj.businesses[0].location.displayAddress + restObj.businesses[0].display_phone;
-            }
-            // Case where Visa API has results and we are adding to them
-            else { //TODO: Add variables
-              responseText += restObj.businesses[0].name + "not found" + "\n";
-            }
-            //responseText += restObj.businesses[0].display_address;
-            //let responseText = req.body.queryResult.outputContexts.length;
-            res.json({
-                fulfillmentText: responseText,
-                source: 'getmerchant'
-            })
-        })
-        .catch(function (error) {
-            console.log(error);
-        });*/
 
     }
 
@@ -262,100 +230,11 @@ app.post('/getmerchant', (req, res) => {
     apiRequest.end();
 
     }
-/*
-        //Yelp search
-        var searchUrl = "https://api.yelp.com/v3/businesses/search?term=" + restName + "&location=" + restLoc;
-        var config = {
-            method: 'get',
-            url: searchUrl,
-            headers: {
-                'Authorization': 'Bearer qxzauzGWC0i9v6BEJGzkV7kRCUBZE1FWJB16OGgn-XB-DdKIRuk-_4RFjNhJSbvD6VhttsdAMNU_broBe1ZpqgOLeqdyS7o9HXPz_bMZHyLOw6nxd4TmAQ37ZCD5XnYx'
-            }
-        };
-        axios(config)
-            .then(function (response) {
-                var allRestaurants = JSON.stringify(response.data);
-                var restObj = JSON.parse(allRestaurants);
-                responseText += restObj.businesses[0].name;
-                //responseText += restObj.businesses[0].display_address;
-                //let responseText = req.body.queryResult.outputContexts.length;
-                res.json({
-                    fulfillmentText: responseText,
-                    source: 'getmerchant'
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    //call Visa merchant locator API
-  //  var zip = 90007
-    var apiRequest = https.request(options, function (apiResponse) {
-      var chunks = [];
-      apiResponse.on("data", function (chunk) {
-        chunks.push(chunk);
-      });
-      apiResponse.on("end", function (chunk) {
-        var body = Buffer.concat(chunks);
-        var jsonRes = JSON.parse(body);
-        var restaurantRes = jsonRes.merchantLocatorServiceResponse.response;
-        var resultArray = [];
-        // Check if 0 results
-        if (!restaurantRes) {
-          res.json({
-            message: "No restaurants were found with the given requirements.",
-            zipCode: zip,
-            requestedRestaurantName: tempName,
-            requestedRestaurantAddress: tempLoc
-          })
-        }
-        else {
-          // Loop through each restaurant returned from the api search
-          // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
-          // Store each restaurant and its specific parameteres in a variable resultArray
-          for (var i = 0; i < restaurantRes.length; ++i) {
-            console.log(restaurantRes[i].responseValues)
-            var temp = new Object()
-            temp.name = restaurantRes[i].responseValues.visaStoreName
-            temp.paymentAcceptanceMethods = restaurantRes[i].responseValues.paymentAcceptanceMethod
-            temp.terminalType = restaurantRes[i].responseValues.terminalType
-            temp.address = restaurantRes[i].responseValues.merchantStreetAddress
-            temp.zipCode = restaurantRes[i].responseValues.merchantPostalCode
-            temp.city = restaurantRes[i].responseValues.merchantCity
-            if (restaurantRes[i].responseValues.merchantState) {
-              temp.state = restaurantRes[i].responseValues.merchantState
-            }
-            resultArray.push(temp)
-          }
-          // Take resultArray, return it as JSON
-          res.json(resultArray)
-        }
-      });
-      apiResponse.on("error", function (error) {
-        console.error(error);
-        res.json ({
-          message: "No restaurants were found with the given requirements.",
-          zipCode: zip,
-          requestedRestaurantName: tempName,
-          requestedRestaurantAddress: tempLoc
-        })
-      });
-  })
-  if (tempName) {
-    var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
-    "searchAttrList":{"merchantName": tempName,"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
-    "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
-  }
-  else {
-    var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
-    "searchAttrList":{"merchantCategoryCode":["5812","5814"],"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
-    "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
-  }
-  apiRequest.write(postData);
-  apiRequest.end();
-  */
+
+
   })
 
-  async function searchYelp(restLoc, restName){
+  async function searchYelp(restLoc, restName, responseText){
      //Yelp search
 
      var searchUrl = "https://api.yelp.com/v3/businesses/search?location=" + restLoc + "&term=" + restName;
@@ -369,19 +248,19 @@ app.post('/getmerchant', (req, res) => {
 
         return axios(config)
          .then(function (response) {
-           var responseText = "";
+
              var allRestaurants = JSON.stringify(response.data);
              var restObj = JSON.parse(allRestaurants);
 
              //Case where Visa API has no results
            //  if(responseText.localeCompare("")){ //TODO: Add variables
-             if(responseText.localeCompare("")){ //TODO: Add variables to responsetext
-               responseText += response.data.businesses[0].name + "found" + "\n" + response.data.businesses[0].location.displayAddress + response.data.businesses[0].display_phone;
+             if(responseText.localeCompare("") != 0){ //TODO: Add variables to responsetext
+               responseText += restObj.businesses[0].name + "found" + "\n" + restObj.businesses[0].location.display_address + restObj.businesses[0].display_phone;
              }
              // Case where Visa API has results and we are adding to them
            //  else { //TODO: Add variables
              else { //TODO: Add variables to responsetext
-               responseText += response.data.businesses[0].name + "not found" + "\n";
+               responseText += restObj.businesses[0].name + "not found" + "\n";
              }
              //responseText += restObj.businesses[0].display_address;
              //let responseText = req.body.queryResult.outputContexts.length;
