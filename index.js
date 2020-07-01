@@ -291,8 +291,12 @@ app.post('/getmerchant', (req, res) => {
              //Case where Visa API has no results
            //  if(responseText.localeCompare("")){ //TODO: Add variables
              if(!restaurantRes){ //TODO: Add variables to responsetext
-              yelpResponse += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.display_address +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + response.data.businesses[0].url + ". They are currently using "
+                 var shortURL = response.data.businesses[0].url;
+                 if(response.data.businesses[0].url.indexOf("?") != -1) shortURL = response.data.businesses[0].url.substring(0,response.data.businesses[0].url.indexOf("?")+1);
+              
+              yelpResponse += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.display_address +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + shortURL + "."
               for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
+               if(i == 0) yelpResponse += " They are currently using ";
                yelpResponse += response.data.businesses[0].transactions[i]
                if(i + 1 != response.data.businesses[0].transactions.length){
                 yelpResponse += " or "
