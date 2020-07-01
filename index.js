@@ -204,6 +204,8 @@ app.post('/getmerchant', (req, res) => {
                 responseText += " " (i + 1) + ". " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
               }
 
+              responseText += " For more information on one of these options, search its name"
+
               resultArray.push(temp)
 
               // Take resultArray, return it as JSON
@@ -234,7 +236,10 @@ app.post('/getmerchant', (req, res) => {
       }
       else {
         responseText += "Here is a list of restaurants you could go to! "
-        searchYelpMultiple(restLoc, keyword, responseText)
+        //searchYelpMultiple(restLoc, keyword, responseText)
+
+        responseText += " For more information on one of these options, search its name"
+
         res.json({
           fulfillmentText: responseText,
           source: 'getmerchant'
