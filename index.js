@@ -257,18 +257,18 @@ app.post('/getmerchant', (req, res) => {
              //Case where Visa API has no results
            //  if(responseText.localeCompare("")){ //TODO: Add variables
              if(responseText.localeCompare("") != 0){ //TODO: Add variables to responsetext
-              responseText +=  "You can call them at " + response.data.businesses[0].display_phone + ". They are currently using "
-              for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
-                responseText += response.data.businesses[i].transactions
-              }
-            }
-             // Case where Visa API has results and we are adding to them
-           //  else { //TODO: Add variables
-             else { //TODO: Add variables to responsetext
               responseText += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.displayAddress +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + response.data.businesses[0].url + ". They are currently using " 
               for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
                responseText += response.data.businesses[i].transactions
              }
+            }
+             // Case where Visa API has results and we are adding to them
+           //  else { //TODO: Add variables
+             else { //TODO: Add variables to responsetext
+              responseText +=  "You can call them at " + response.data.businesses[0].display_phone + ". They are currently using "
+              for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
+                responseText += response.data.businesses[i].transactions
+              }
             }
              //responseText += restObj.businesses[0].display_address;
              //let responseText = req.body.queryResult.outputContexts.length;
