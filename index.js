@@ -186,25 +186,25 @@ app.post('/getmerchant', (req, res) => {
             // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
             // Store each restaurant and its specific parameteres in a variable resultArray
             responseText += "Here is a list of restaurants you could go to!"
-            // for (var i = 0; i < restaurantRes.length; ++i) {
-            //   console.log(restaurantRes[i].responseValues)
-            //   var temp = new Object()
-            //   temp.name = restaurantRes[i].responseValues.visaStoreName
-            //   temp.paymentAcceptanceMethods = restaurantRes[i].responseValues.paymentAcceptanceMethod
-            //   temp.terminalType = restaurantRes[i].responseValues.terminalType
-            //   temp.address = restaurantRes[i].responseValues.merchantStreetAddress
-            //   temp.zipCode = restaurantRes[i].responseValues.merchantPostalCode
-            //   temp.city = restaurantRes[i].responseValues.merchantCity
-            //   if (restaurantRes[i].responseValues.merchantState) {
-            //     temp.state = restaurantRes[i].responseValues.merchantState
-            //   }
-            //   temp.url = restaurantRes[i].responseValues.merchantUrl
-            //   resultArray.push(temp)
-            //   responseText += i + ". " + temp.name + " at " + temp.address + temp.zipCode + temp.city
-            // }
-            // temp.url = restaurantRes[0].responseValues.merchantUrl
+            for (var i = 0; i < restaurantRes.length; ++i) {
+              console.log(restaurantRes[i].responseValues)
+              var temp = new Object()
+              temp.name = restaurantRes[i].responseValues.visaStoreName
+              temp.paymentAcceptanceMethods = restaurantRes[i].responseValues.paymentAcceptanceMethod
+              temp.terminalType = restaurantRes[i].responseValues.terminalType
+              temp.address = restaurantRes[i].responseValues.merchantStreetAddress
+              temp.zipCode = restaurantRes[i].responseValues.merchantPostalCode
+              temp.city = restaurantRes[i].responseValues.merchantCity
+              if (restaurantRes[i].responseValues.merchantState) {
+                temp.state = restaurantRes[i].responseValues.merchantState
+              }
+              temp.url = restaurantRes[i].responseValues.merchantUrl
+              resultArray.push(temp)
+              responseText += i + ". " + temp.name + " at " + temp.address + temp.zipCode + temp.city
+            }
+            temp.url = restaurantRes[0].responseValues.merchantUrl
 
-            // resultArray.push(temp)
+            resultArray.push(temp)
 
             // Take resultArray, return it as JSON
             // res.json(resultArray)
