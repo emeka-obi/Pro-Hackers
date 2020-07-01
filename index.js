@@ -74,12 +74,8 @@ app.post('/getmerchant', (req, res) => {
           var body = Buffer.concat(chunks);
           var jsonRes = JSON.parse(body);
           restaurantRes = jsonRes.merchantLocatorServiceResponse.response;
-          var resultArray = [];
-          // Check if 0 results
-          if (!restaurantRes) {
-            responseText += "no results from Visa"
-          }
-          else {
+
+          if (restaurantRes) {
             // Loop through each restaurant returned from the api search
             // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
             // Store each restaurant and its specific parameteres in a variable resultArray
@@ -95,11 +91,6 @@ app.post('/getmerchant', (req, res) => {
               temp.state = restaurantRes[0].responseValues.merchantState
             }
             temp.url = restaurantRes[0].responseValues.merchantUrl
-
-            resultArray.push(temp)
-
-            // Take resultArray, return it as JSON
-            // res.json(resultArray)
 
             // TODO: Reformat the same as Yelp
             responseText += "You should go to " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + " " + temp.zipCode + " " + temp.city.toProperCase() + ". They accept " + temp.paymentAcceptanceMethods + " and use " + temp.terminalType + ". You can reach them at " + temp.url + ". Their current wait time is 13 minutes. "
