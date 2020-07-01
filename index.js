@@ -108,7 +108,7 @@ app.post('/getmerchant', (req, res) => {
             // res.json(resultArray)
 
             // TODO: Reformat the same as Yelp
-            responseText += "You should go to " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + " " + temp.zipCode + " " + temp.city.toProperCase() + ".\n They accept " + temp.paymentAcceptanceMethods + " and use " + temp.terminalType + ". You can reach them at " + temp.url + ". Their current wait time is 13 minutes. "
+            responseText += "You should go to " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + " " + temp.zipCode + " " + temp.city.toProperCase() + ". They accept " + temp.paymentAcceptanceMethods + " and use " + temp.terminalType + ". You can reach them at " + temp.url + ". Their current wait time is 13 minutes. "
             var splitLoc = temp.address + "-" + temp.zipCode + "-" + temp.city;
             restLoc = splitLoc.split(' ').join('-')
 
@@ -122,25 +122,11 @@ app.post('/getmerchant', (req, res) => {
           searchYelp(restLoc, restName, responseText, restaurantRes).then(function(response) {
             responseText += response;
             responseText += " Would you like to go to the menu?"
-
-            res.json(
-              {
-                "fulfillmentMessages": [
-                  {
-                    "card": {
-                      "subtitle": [
-                        responseText
-                      ],
-                      "text":[
-                        responseText
-                      ]
-                    }
-                  }
-                ],
-              
-              // fulfillmentText: responseText,
+            
+            res.json({
+              fulfillmentText: responseText,
               source: 'getmerchant'
-              }).catch(function (error) {
+            }).catch(function (error) {
                 console.log(error);
             })
           });
