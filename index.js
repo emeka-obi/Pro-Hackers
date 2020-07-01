@@ -236,15 +236,18 @@ app.post('/getmerchant', (req, res) => {
       }
       else {
         responseText += "Here is a list of restaurants you could go to! "
-        responseText += searchYelpMultiple(restLoc, keyWord, responseText)
+        searchYelpMultiple(restLoc, keyWord, responseText).then(function(response) {
+          responseText += response;
+          responseText += " For more information on one of these options, search its name"
 
-        responseText += " For more information on one of these options, search its name"
-
-        //responseText += ". keyword is " + keyWord
-        res.json({
-          fulfillmentText: responseText,
-          source: 'getmerchant'
-        })
+          res.json({
+            fulfillmentText: responseText,
+            source: 'getmerchant'
+          }).catch(function (error) {
+              console.log(error);
+          })
+        });
+        
       }
 
     }
@@ -316,6 +319,9 @@ app.post('/getmerchant', (req, res) => {
               yelpResponse +=  "You can call them at " + response.data.businesses[0].display_phone + ". They are currently using "
               for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
                 yelpResponse += response.data.businesses[0].transactions[i]
+                if(i + 1 != response.data.businesses[0].transactions.length){
+                  yelpResponse += " or "
+                }
               }
             }
              //responseText += restObj.businesses[0].display_address;
