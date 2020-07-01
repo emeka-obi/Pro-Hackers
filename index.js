@@ -13,7 +13,7 @@ app.use(express.json())
 app.post('/getmerchant', (req, res) => {
     //Get data from dialogflow
 
-    var responseText;
+    var responseText = "";
     var restName, restLoc, keyWord, tempName, zip, tempLoc,radius;
     for (const context of req.body.queryResult.outputContexts) {
         if (context.name.includes("zip") && !context.name.includes("followup")) {
