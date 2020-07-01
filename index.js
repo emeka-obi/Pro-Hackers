@@ -201,7 +201,7 @@ app.post('/getmerchant', (req, res) => {
                 }
                 temp.url = restaurantRes[i].responseValues.merchantUrl
                 resultArray.push(temp)
-                responseText += " " (i + 1) + ". " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
+                responseText += " " + (i + 1) + ". " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
               }
 
               responseText += " For more information on one of these options, search its name"
@@ -272,9 +272,9 @@ app.post('/getmerchant', (req, res) => {
 
       var yelpResponse = "correct"
 
-      /*for(var i = 0; i < response.data.businesses.length; i++){
-        yelpResponse += " " (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[i].location.display_address + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
-      }*/
+      for(var i = 0; i < response.data.businesses.length; i++){
+        yelpResponse += " " + (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[i].location.display_address + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
+      }
       response = yelpResponse
       return response;
   })
