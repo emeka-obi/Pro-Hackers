@@ -236,7 +236,7 @@ app.post('/getmerchant', (req, res) => {
       }
       else {
         responseText += "Here is a list of restaurants you could go to! "
-        searchYelpMultiple(restLoc, keyword, responseText)
+        //searchYelpMultiple(restLoc, keyword, responseText)
 
         responseText += " For more information on one of these options, search its name"
 
@@ -268,7 +268,7 @@ app.post('/getmerchant', (req, res) => {
       var restObj = JSON.parse(allRestaurants);
 
       for(var i = 0; i < response.data.businesses.length; i++){
-        //responseText += " " (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[0].location.display_address + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
+        responseText += " " (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[0].location.display_address + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
       }
       response = responseText
       return response;
