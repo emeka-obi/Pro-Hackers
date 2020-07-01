@@ -250,9 +250,14 @@ app.post('/getmerchant', (req, res) => {
         
       }
 
+    } else {
+        res.json({
+            fulfillmentText: "hi",
+            source: 'getmerchant'
+        }).catch(function (error) {
+            console.log(error);
+        })
     }
-
-
   })
 
   async function searchYelpMultiple(restLoc, keyWord, responseText){
