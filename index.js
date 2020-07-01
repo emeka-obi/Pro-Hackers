@@ -204,7 +204,7 @@ app.post('/getmerchant', (req, res) => {
             // }
             // temp.url = restaurantRes[0].responseValues.merchantUrl
 
-            resultArray.push(temp)
+            // resultArray.push(temp)
 
             // Take resultArray, return it as JSON
             // res.json(resultArray)
