@@ -155,6 +155,7 @@ app.post('/getmerchant', (req, res) => {
 
     //Option 2: multiple restaurants, sort by wait time
     else if (req.body.queryResult.intent.displayName.includes("list-options - 2 - checkapi")) {
+      responseText += zip
       if(!keyWord || keyWord.localeCompare("") == 0){
         if(!radius){
           radius = 5;
