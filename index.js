@@ -311,6 +311,9 @@ app.post('/getmerchant', (req, res) => {
               yelpResponse += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.display_address +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + response.data.businesses[0].url + ". They are currently using " 
               for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
                yelpResponse += response.data.businesses[0].transactions[i]
+               if(i + 1 != response.data.businesses[0].transactions.length){
+                yelpResponse += " or "
+              }
              }
             }
              // Case where Visa API has results and we are adding to them
@@ -324,6 +327,7 @@ app.post('/getmerchant', (req, res) => {
                 }
               }
             }
+            yelpResponse += ". "
              //responseText += restObj.businesses[0].display_address;
              //let responseText = req.body.queryResult.outputContexts.length;
              response = yelpResponse
