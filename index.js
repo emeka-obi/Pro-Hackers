@@ -236,11 +236,11 @@ app.post('/getmerchant', (req, res) => {
       }
       else {
         responseText += "Here is a list of restaurants you could go to! "
-        //searchYelpMultiple(restLoc, keyword, responseText)
+        searchYelpMultiple(restLoc, keyWord, responseText)
 
         responseText += " For more information on one of these options, search its name"
 
-        responseText += ". keyword is " + keyword
+        //responseText += ". keyword is " + keyWord
         res.json({
           fulfillmentText: responseText,
           source: 'getmerchant'
@@ -252,8 +252,8 @@ app.post('/getmerchant', (req, res) => {
 
   })
 
-  async function searchYelpMultiple(restLoc, keyword, responseText){
-    var searchUrl = "https://api.yelp.com/v3/businesses/search?location=" + restLoc + "&term=" + keyword;
+  async function searchYelpMultiple(restLoc, keyWord, responseText){
+    var searchUrl = "https://api.yelp.com/v3/businesses/search?location=" + restLoc + "&term=" + keyWord;
     var config = {
       method: 'get',
       url: searchUrl,
