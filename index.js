@@ -21,7 +21,7 @@ app.post('/getmerchant', (req, res) => {
             tempName = context.parameters.restaurant;
             tempLoc = context.parameters.address;
             var tempKeyWord = context.parameters.searchkeywords;
-            radius = context.parameters.unitlength.amount;
+            radius = context.parameters.unitlength && context.parameters.unitlength.amount ? context.parameters.unitlength.amount : 5;
             zip = context.parameters.zip;
             if (tempLoc && !tempLoc.includes(zip)) tempLoc += "-" + zip;
             else if(!tempLoc){
@@ -62,95 +62,90 @@ app.post('/getmerchant', (req, res) => {
         res.json({
               fulfillmentText: "hi",
               source: 'getmerchant'
+            })
+      var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
+      "searchAttrList":{"merchantName": tempName,"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
+      "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
+
+      var apiRequest = https.request(options, function (apiResponse) {
+        var chunks = [];
+
+        apiResponse.on("data", function (chunk) {
+          chunks.push(chunk);
+        });
+
+        apiResponse.on("end", function (chunk) {
+          var body = Buffer.concat(chunks);
+          var jsonRes = JSON.parse(body);
+          restaurantRes = jsonRes.merchantLocatorServiceResponse.response;
+          var resultArray = [];
+          // Check if 0 results
+          if (!restaurantRes) {
+            responseText += "no results from Visa"
+            res.json({
+              message: responseText,
+              zipCode: zip,
+              requestedRestaurantName: tempName,
+              requestedRestaurantAddress: tempLoc
+            })
+          }
+          else {
+            // Loop through each restaurant returned from the api search
+            // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
+            // Store each restaurant and its specific parameteres in a variable resultArray
+            console.log(restaurantRes[0].responseValues)
+            var temp = new Object()
+            temp.name = restaurantRes[0].responseValues.visaStoreName
+            temp.paymentAcceptanceMethods = restaurantRes[0].responseValues.paymentAcceptanceMethod
+            temp.terminalType = restaurantRes[0].responseValues.terminalType
+            temp.address = restaurantRes[0].responseValues.merchantStreetAddress
+            temp.zipCode = restaurantRes[0].responseValues.merchantPostalCode
+            temp.city = restaurantRes[0].responseValues.merchantCity
+            if (restaurantRes[0].responseValues.merchantState) {
+              temp.state = restaurantRes[0].responseValues.merchantState
+            }
+            temp.url = restaurantRes[0].responseValues.merchantUrl
+
+            resultArray.push(temp)
+
+            // Take resultArray, return it as JSON
+            // res.json(resultArray)
+
+            // TODO: Reformat the same as Yelp
+            responseText += "You should go to " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + " " + temp.zipCode + " " + temp.city.toProperCase() + ". They accept " + temp.paymentAcceptanceMethods + " and use " + temp.terminalType + ". You can reach them at " + temp.url + ". Their current wait time is 13 minutes. "
+            var splitLoc = temp.address + "-" + temp.zipCode + "-" + temp.city;
+            restLoc = splitLoc.split(' ').join('-')
+
+            var splitName = temp.name
+            restName = splitName.split(' ').join('-')
+
+          }
+          searchYelp(restLoc, restName, responseText, restaurantRes).then(function(response) {
+            responseText += response;
+            responseText += " Would you like to go to the menu?"
+
+            res.json({
+              fulfillmentText: responseText,
+              source: 'getmerchant'
             }).catch(function (error) {
                 console.log(error);
             })
-//       var postData = JSON.stringify({"header":{"messageDateTime":"2020-06-26T19:08:07.903","requestMessageId":"Request_001","startIndex":"0"},
-//       "searchAttrList":{"merchantName": tempName,"merchantCountryCode":"840","merchantPostalCode":zip,"distance":"2","distanceUnit":"M"},
-//       "responseAttrList":["GNLOCATOR"],"searchOptions":{"maxRecords":"5","matchIndicators":"true","matchScore":"true"}})
-
-//       var apiRequest = https.request(options, function (apiResponse) {
-//         var chunks = [];
-
-//         apiResponse.on("data", function (chunk) {
-//           chunks.push(chunk);
-//         });
-
-//         apiResponse.on("end", function (chunk) {
-//           var body = Buffer.concat(chunks);
-//           var jsonRes = JSON.parse(body);
-//           restaurantRes = jsonRes.merchantLocatorServiceResponse.response;
-//           var resultArray = [];
-//           // Check if 0 results
-//           if (!restaurantRes) {
-//             // responseText += "no results from Visa"
-//             // res.json({
-//             //   message: responseText,
-//             //   zipCode: zip,
-//             //   requestedRestaurantName: tempName,
-//             //   requestedRestaurantAddress: tempLoc
-//             // })
-//           }
-//           else {
-//             // Loop through each restaurant returned from the api search
-//             // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
-//             // Store each restaurant and its specific parameteres in a variable resultArray
-//             console.log(restaurantRes[0].responseValues)
-//             var temp = new Object()
-//             temp.name = restaurantRes[0].responseValues.visaStoreName
-//             temp.paymentAcceptanceMethods = restaurantRes[0].responseValues.paymentAcceptanceMethod
-//             temp.terminalType = restaurantRes[0].responseValues.terminalType
-//             temp.address = restaurantRes[0].responseValues.merchantStreetAddress
-//             temp.zipCode = restaurantRes[0].responseValues.merchantPostalCode
-//             temp.city = restaurantRes[0].responseValues.merchantCity
-//             if (restaurantRes[0].responseValues.merchantState) {
-//               temp.state = restaurantRes[0].responseValues.merchantState
-//             }
-//             temp.url = restaurantRes[0].responseValues.merchantUrl
-
-//             resultArray.push(temp)
-
-//             // Take resultArray, return it as JSON
-//             // res.json(resultArray)
-
-//             // TODO: Reformat the same as Yelp
-//             responseText += "You should go to " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + " " + temp.zipCode + " " + temp.city.toProperCase() + ". They accept " + temp.paymentAcceptanceMethods + " and use " + temp.terminalType + ". You can reach them at " + temp.url + ". Their current wait time is 13 minutes. "
-//             var splitLoc = temp.address + "-" + temp.zipCode + "-" + temp.city;
-//             restLoc = splitLoc.split(' ').join('-')
-
-//             var splitName = temp.name
-//             restName = splitName.split(' ').join('-')
-
-
-            
-
-//           }
-//           searchYelp(restLoc, restName, responseText, restaurantRes).then(function(response) {
-//             responseText += response;
-//             responseText += " Would you like to go to the menu?"
-            
-//             res.json({
-//               fulfillmentText: responseText,
-//               source: 'getmerchant'
-//             }).catch(function (error) {
-//                 console.log(error);
-//             })
-//           });
+          });
         });
 
-//         apiResponse.on("error", function (error) {
-//           console.error(error);
-//           res.json ({
-//             message: "No restaurants were found with the given requirements.",
-//             zipCode: zip,
-//             requestedRestaurantName: tempName,
-//             requestedRestaurantAddress: tempLoc
-//           })
-//         });
-//     })
-//     apiRequest.write(postData);
+        apiResponse.on("error", function (error) {
+          console.error(error);
+          res.json ({
+            message: "No restaurants were found with the given requirements.",
+            zipCode: zip,
+            requestedRestaurantName: tempName,
+            requestedRestaurantAddress: tempLoc
+          })
+        });
+    })
+    apiRequest.write(postData);
 
-//     apiRequest.end();
+    apiRequest.end();
 
     }
 
@@ -251,7 +246,7 @@ app.post('/getmerchant', (req, res) => {
               console.log(error);
           })
         });
-        
+
       }
 
     } else {
@@ -317,7 +312,7 @@ app.post('/getmerchant', (req, res) => {
              //Case where Visa API has no results
            //  if(responseText.localeCompare("")){ //TODO: Add variables
              if(!restaurantRes){ //TODO: Add variables to responsetext
-              yelpResponse += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.display_address +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + response.data.businesses[0].url + ". They are currently using " 
+              yelpResponse += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.display_address +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + response.data.businesses[0].url + ". They are currently using "
               for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
                yelpResponse += response.data.businesses[0].transactions[i]
                if(i + 1 != response.data.businesses[0].transactions.length){
