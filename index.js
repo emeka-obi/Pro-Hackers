@@ -182,7 +182,7 @@ app.post('/getmerchant', (req, res) => {
                 responseText += " " + (i + 1) + ". " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
               }
 
-              responseText += "\nFor more information on one of these options, search its name. Otherwise say if you want to return to the main menu."
+              responseText += "\nFor more information on one of these options, type its name and street. Otherwise say if you want to return to the main menu."
 
               //resultArray.push(temp)
 
@@ -292,7 +292,7 @@ app.post('/getmerchant', (req, res) => {
            //  if(responseText.localeCompare("")){ //TODO: Add variables
              if(!restaurantRes){ //TODO: Add variables to responsetext
                  var shortURL = response.data.businesses[0].url;
-                 if(response.data.businesses[0].url.indexOf("?") != -1) shortURL = response.data.businesses[0].url.substring(0,response.data.businesses[0].url.indexOf("?")+1);
+                 if(response.data.businesses[0].url.indexOf("?") != -1) shortURL = response.data.businesses[0].url.substring(0,response.data.businesses[0].url.indexOf("?"));
               
               yelpResponse += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.display_address +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + shortURL + "."
               for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
