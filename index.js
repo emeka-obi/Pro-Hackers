@@ -204,7 +204,7 @@ app.post('/getmerchant', (req, res) => {
                 responseText += " " + (i + 1) + ". " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
               }
 
-              responseText += " For more information on one of these options, search its name"
+              responseText += "\nFor more information on one of these options, search its name. Otherwise say if you want to return to the main menu."
 
               //resultArray.push(temp)
 
@@ -238,7 +238,7 @@ app.post('/getmerchant', (req, res) => {
         responseText += "Here is a list of restaurants you could go to! "
         searchYelpMultiple(restLoc, keyWord, responseText).then(function(response) {
           responseText += response;
-          responseText += " For more information on one of these options, search its name"
+          responseText += "\nFor more information on one of these options, search its name. Otherwise say if you want to return to the main menu."
 
           res.json({
             fulfillmentText: responseText,
