@@ -121,7 +121,7 @@ app.post('/getmerchant', (req, res) => {
 
           }
           searchYelp(restLoc, restName, responseText, restaurantRes).then(function(response) {
-            responseText += response;
+            // responseText += response;
 
             res.json({
               fulfillmentText: responseText,
