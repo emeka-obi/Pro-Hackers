@@ -270,10 +270,10 @@ app.post('/getmerchant', (req, res) => {
       var allRestaurants = JSON.stringify(response.data);
       var restObj = JSON.parse(allRestaurants);
 
-      var yelpResponse = ""
+      var yelpResponse = "" + restLoc
 
       for(var i = 0; i < (response.data.businesses.length < 5 ? response.data.businesses.length : 5); i++){
-        yelpResponse += "  \n " + (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[i].location.display_address + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
+        yelpResponse += "  \n " + (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[i].location.address1 + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
       }
       response = yelpResponse
       return response;
@@ -308,7 +308,7 @@ app.post('/getmerchant', (req, res) => {
              //Case where Visa API has no results
            //  if(responseText.localeCompare("")){ //TODO: Add variables
              if(!restaurantRes){ //TODO: Add variables to responsetext
-              yelpResponse += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.displayAddress +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + response.data.businesses[0].url + ". They are currently using " 
+              yelpResponse += "You should go to " + response.data.businesses[0].name + " at " + response.data.businesses[0].location.display_address +". Their number is " + response.data.businesses[0].phone +". Try their webpage at " + response.data.businesses[0].url + ". They are currently using " 
               for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
                yelpResponse += response.data.businesses[0].transactions[i]
              }
