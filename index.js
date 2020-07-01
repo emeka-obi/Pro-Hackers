@@ -108,7 +108,7 @@ app.post('/getmerchant', (req, res) => {
             // res.json(resultArray)
 
             // TODO: Reformat the same as Yelp
-            responseText += "You should go to " + temp.name + " at " + temp.address + temp.zipCode + temp.city + ". They accept " + temp.paymentAcceptanceMethods + " and use " + temp.terminalType + ". You can reach them at " + temp.url
+            responseText += "You should go to " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + temp.zipCode + temp.city + ". They accept " + temp.paymentAcceptanceMethods + " and use " + temp.terminalType + ". You can reach them at " + temp.url
 
             var splitLoc = temp.address + "-" + temp.zipCode + "-" + temp.city;
             restLoc = splitLoc.split(' ').join('-')
@@ -200,7 +200,7 @@ app.post('/getmerchant', (req, res) => {
               }
               temp.url = restaurantRes[i].responseValues.merchantUrl
               resultArray.push(temp)
-              responseText += (i + 1) + ". " + temp.name.toProperCase() + " at " + temp.address + "   "
+              responseText += (i + 1) + ". " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + "            "
             }
             temp.url = restaurantRes[0].responseValues.merchantUrl
 
