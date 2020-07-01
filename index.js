@@ -270,11 +270,11 @@ app.post('/getmerchant', (req, res) => {
       var allRestaurants = JSON.stringify(response.data);
       var restObj = JSON.parse(allRestaurants);
 
-      var yelpResponse = ""
+      var yelpResponse = "correct"
 
-      for(var i = 0; i < response.data.businesses.length; i++){
-        yelpResponse += " " (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[0].location.display_address + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
-      }
+      /*for(var i = 0; i < response.data.businesses.length; i++){
+        yelpResponse += " " (i + 1) + ". " + response.data.businesses[i].name + " at " + response.data.businesses[i].location.display_address + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
+      }*/
       response = yelpResponse
       return response;
   })
