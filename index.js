@@ -255,12 +255,12 @@ app.post('/getmerchant', (req, res) => {
              //Case where Visa API has no results
            //  if(responseText.localeCompare("")){ //TODO: Add variables
              if(responseText.localeCompare("") != 0){ //TODO: Add variables to responsetext
-               responseText += response.data.businesses[0].name + "found" + "\n" + response.data.businesses[0].location.displayAddress[0] + "\n"+ response.data.businesses[0].display_phone;
+               responseText += restObj.businesses[0].name + "found" + "\n" + restObj.businesses[0].location.display_address + restObj.businesses[0].display_phone;
              }
              // Case where Visa API has results and we are adding to them
            //  else { //TODO: Add variables
              else { //TODO: Add variables to responsetext
-               responseText += response.data.businesses[0].name + "not found" + "\n";
+               responseText += restObj.businesses[0].name + "not found" + "\n";
              }
              //responseText += restObj.businesses[0].display_address;
              //let responseText = req.body.queryResult.outputContexts.length;
