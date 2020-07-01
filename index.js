@@ -200,7 +200,7 @@ app.post('/getmerchant', (req, res) => {
               }
               temp.url = restaurantRes[i].responseValues.merchantUrl
               resultArray.push(temp)
-              responseText += i + ". " + temp.name + " at " + temp.address + temp.zipCode + temp.city
+              responseText += (i + 1) + ". " + temp.name.toProperCase() + " at " + temp.address + "   "
             }
             temp.url = restaurantRes[0].responseValues.merchantUrl
 
@@ -281,6 +281,10 @@ app.post('/getmerchant', (req, res) => {
          });
 
    }
+
+   String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+  };
 
 
 
