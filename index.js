@@ -21,7 +21,7 @@ app.post('/getmerchant', (req, res) => {
             tempName = context.parameters.restaurant;
             tempLoc = context.parameters.address;
             var tempKeyWord = context.parameters.searchkeywords;
-            var tempRad = context.parameters.unitlength;
+            var tempRad = context.parameters.unitlength.amount;
             zip = context.parameters.zip;
             if (tempLoc && !tempLoc.includes(zip)) tempLoc += "-" + zip;
             else if(!tempLoc){
@@ -174,10 +174,10 @@ app.post('/getmerchant', (req, res) => {
             var body = Buffer.concat(chunks);
             var jsonRes = JSON.parse(body);
             restaurantRes = jsonRes.merchantLocatorServiceResponse.response;
-            var resultArray = [];
+            //var resultArray = [];
             // Check if 0 results
             if (!restaurantRes) {
-              responseText += "no results from Visa" + keyWord
+              responseText += "no results from Visa"
               res.json({
                 message: responseText,
                 zipCode: zip,
@@ -190,7 +190,7 @@ app.post('/getmerchant', (req, res) => {
               // Grab specific parameters we want such as name, paymentAcceptanceMethods, address etc
               // Store each restaurant and its specific parameteres in a variable resultArray
               responseText += "Here is a list of restaurants you could go to! "
-              /*for (var i = 0; i < restaurantRes.length; ++i) {
+              for (var i = 0; i < restaurantRes.length; ++i) {
                 console.log(restaurantRes[i].responseValues)
                 var temp = new Object()
                 temp.name = restaurantRes[i].responseValues.visaStoreName
@@ -203,13 +203,13 @@ app.post('/getmerchant', (req, res) => {
                   temp.state = restaurantRes[i].responseValues.merchantState
                 }
                 temp.url = restaurantRes[i].responseValues.merchantUrl
-                resultArray.push(temp)
+                //resultArray.push(temp)
                 responseText += " " + (i + 1) + ". " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + ". It has a wait time of " + (i * 2 + 3) + " minutes.    "
-              }*/
+              }
 
               responseText += " For more information on one of these options, search its name"
 
-              resultArray.push(temp)
+              //resultArray.push(temp)
 
               // Take resultArray, return it as JSON
               // res.json(resultArray)
