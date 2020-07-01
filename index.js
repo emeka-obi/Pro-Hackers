@@ -120,7 +120,7 @@ app.post('/getmerchant', (req, res) => {
             
 
           }
-          searchYelp(restLoc, restName, restaurantRes).then(function(response) {
+          searchYelp(restLoc, restName, responseText, restaurantRes).then(function(response) {
             responseText += response;
 
             res.json({
@@ -236,7 +236,7 @@ app.post('/getmerchant', (req, res) => {
 
   })
 
-  async function searchYelp(restLoc, restName, restaurantRes){
+  async function searchYelp(restLoc, restName, responseText, restaurantRes){
      //Yelp search
 
      var searchUrl = "https://api.yelp.com/v3/businesses/search?location=" + restLoc + "&term=" + restName;
