@@ -216,7 +216,7 @@ app.post('/getmerchant', (req, res) => {
         responseText += "Here is a list of restaurants you could go to! "
         searchYelpMultiple(restLoc, keyWord, responseText).then(function(response) {
           responseText += response;
-          responseText += "\nFor more information on one of these options, search its name. Otherwise say if you want to return to the main menu."
+          responseText += "\nFor more information on one of these options, search its name.\Else, type yes to return to the main menu or no to end the conversation."
 
           res.json({
             fulfillmentText: responseText,
