@@ -107,7 +107,9 @@ app.post('/getmerchant', (req, res) => {
             temp.url = restaurantRes[0].responseValues.merchantUrl
 
             // TODO: Reformat the same as Yelp
-            responseText += "You should go to " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + " " + temp.zipCode + " " + temp.city.toProperCase() + ". They accept " + temp.paymentAcceptanceMethods + " and use " + temp.terminalType + ". You can reach them at " + temp.url + ". Their current wait time is 13 minutes. "
+             
+            responseText += "You should go to " + temp.name.toProperCase() + " at " + temp.address.toProperCase() + " " + temp.zipCode + " " + temp.city.toProperCase() + ". They accept " + temp.paymentAcceptanceMethods + " and use " + temp.terminalType + ". ";
+            if(temp.url && temp.url.length != 0) responseText += " You can reach them at " + temp.url + ". Their current wait time is 13 minutes. ";
             var splitLoc = temp.address + "-" + temp.zipCode + "-" + temp.city;
             restLoc = splitLoc.split(' ').join('-')
 
@@ -320,8 +322,9 @@ app.post('/getmerchant', (req, res) => {
              // Case where Visa API has results and we are adding to them
            //  else { //TODO: Add variables
              else { //TODO: Add variables to responsetext
-              yelpResponse +=  "You can call them at " + response.data.businesses[0].display_phone + ". They are currently using "
+              yelpResponse +=  "You can call them at " + response.data.businesses[0].display_phone + "."
               for(var i = 0; i < response.data.businesses[0].transactions.length; i++){
+                if(i==0) yelpResponse += " They are currently using ";
                 yelpResponse += response.data.businesses[0].transactions[i]
                 if(i + 1 != response.data.businesses[0].transactions.length){
                   yelpResponse += " or "
