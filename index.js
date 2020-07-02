@@ -17,29 +17,43 @@ app.post('/getmerchant', (req, res) => {
     var restName, restLoc, keyWord, tempName, zip, tempLoc,radius;
     for (const context of req.body.queryResult.outputContexts) {
         if (context.name.includes("zip") && !context.name.includes("followup")) {
+            zip = context.parameters.zip;
+            
+            //If none of them have been grabbed yet, set temporarily to the first values
+            if(!tempLoc && !tempName && !radius){
+                tempName = context.parameters.restaurant;
+                tempLoc = context.parameters.address;    
+                var tempKeyWord1 = context.parameters.searchkeywords;
+                radius = context.parameters.unitlength && context.parameters.unitlength.amount ? context.parameters.unitlength.amount : 5;
+                //Remove whitespaces and commas
+                if (tempName && tempName.length != 0) {
+                    restName = tempName.split(' ').join('-'); //trim whitespace for parsing
+                }
+                if(tempKeyWord1){
+                    keyWord = tempKeyWord1.split(' ').join('-');
+                }
+            }
+        } else if(context.name.includes("details-followup") || context.name.includes("verify-followup")){
             //Parse out restaurant name and location
             tempName = context.parameters.restaurant;
-            tempLoc = context.parameters.address;
+            tempLoc = context.parameters.address;    
             var tempKeyWord = context.parameters.searchkeywords;
             radius = context.parameters.unitlength && context.parameters.unitlength.amount ? context.parameters.unitlength.amount : 5;
-            zip = context.parameters.zip;
-            if (tempLoc && !tempLoc.includes(zip)) tempLoc += "-" + zip;
-            else if(!tempLoc){
-              tempLoc = zip;
-            }
             //Remove whitespaces and commas
             if (tempName && tempName.length != 0) {
                 restName = tempName.split(' ').join('-'); //trim whitespace for parsing
             }
-            if (tempLoc) {
-                restLoc = tempLoc.split(' ').join('-');
-            }
             if(tempKeyWord){
                 keyWord = tempKeyWord.split(' ').join('-');
             }
-            break;
         }
     }
+
+    //Finish parsing location
+     if (tempLoc && !tempLoc.includes(zip)) tempLoc += "-" + zip;
+     else if(!tempLoc) tempLoc = zip;
+     if (tempLoc) restLoc = tempLoc.split(' ').join('-');
+            
     // Defining Visa API parameters
     var options = {
       'method': 'POST',
